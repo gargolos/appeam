@@ -52,7 +52,8 @@ class UserController extends Controller
             'user' => 'required|string',
             'password' => 'required',
         ]);
-        
+        echo $params_array;
+            die();
         if($validate->fails()){
             //La validacion a fallado
             $signup = array(
