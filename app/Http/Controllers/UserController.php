@@ -45,10 +45,20 @@ class UserController extends Controller
 
     public function login(Request $request){
 
-        //$jwtAuth = new \App\Helpers\JwtAuth();
-        //$jwtAuth->signup();
+        $jwtAuth = new \App\Helpers\JwtAuth();
+        //echo $jwtAuth->signup();
 
-        //return "Accion del login de usuarios";
+        $json = $request->input('json', null);
+        $params = json_decode($json);
+        $params_array = json_decode($json, true);
+
+
+        $user = 'BE';
+        $password = '123';
+        $pwd = hash('sha256', $password); 
+        //var_dump($pwd); die();
+
+        return response()->json($jwtAuth->signup($user, $pwd,true), 200);
     }
 
 
@@ -109,7 +119,8 @@ class UserController extends Controller
                 $usuario->user = $params_array['user'];
                 $usuario->email = $params_array['email'];
                 
-                $usuario->password = password_hash($params_array['password'], PASSWORD_BCRYPT, ['cost'=>4]);
+                //$usuario->password = password_hash($params_array['password'], PASSWORD_BCRYPT, ['cost'=>4]);
+                $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 $usuario->id_rol = 0;
 
@@ -163,7 +174,7 @@ class UserController extends Controller
                 $usuario = new User();
                 $usuario->user = $params_array['user'];
                 $usuario->email = $params_array['email'];
-                $usuario->password = password_hash($params_array['password'], PASSWORD_BCRYPT, ['cost'=>4]);
+                $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 $usuario->id_rol = $params_array['id_rol'];
 
