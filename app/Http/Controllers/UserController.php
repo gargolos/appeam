@@ -44,23 +44,41 @@ class UserController extends Controller
     }
 
     public function login(Request $request){
-
         $jwtAuth = new \App\Helpers\JwtAuth();
-        //echo $jwtAuth->signup();
-
         $json = $request->input('json', null);
         $params = json_decode($json);
         $params_array = json_decode($json, true);
-
-
-        $user = 'BE';
-        $password = '123';
-        $pwd = hash('sha256', $password); 
+        $validate = Validator::make($params_array, [
+            'user' => 'required|string',
+            'password' => 'required',
+        ]);
+        
+        if($validate->fails()){
+            //La validacion a fallado
+            $signup = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'El usuario no se ha podido identificar',
+                'errors' => $validate->errors()
+            );
+        }else{
+            //cifrar el password
+            $pwd = hash('sha256', $params->password); 
+            //devolver el token
+            $signup = $jwtAuth->signup($params->user, $pwd);
+            if(!empty($params->gettoken)){
+                $signup = $jwtAuth->signup($params->user, $pwd, true);
+            }
+        }
         //var_dump($pwd); die();
-
-        return response()->json($jwtAuth->signup($user, $pwd,true), 200);
+        return response()->json($signup, 200);
     }
 
+    public function datosSesion(Request $request){
+      //  $params_array = json_decode($jwtAuth->signup($user, $pwd,true), true);
+
+ //       show();
+    }
 
     public function index(){
         //entrega todo sin que revise a que ciudad pertence

@@ -29,7 +29,8 @@ class JwtAuth{
         //Generar el token con los datos del usuario identidicado
         if($signup){
             $token = array(
-                'sub' => $user->id,
+                'id' => $user->id,
+                'id_rol' => $user->id_rol,
                 'user' => $user->user,
                 'email' => $user->email,
                 'iat' => time(),
@@ -58,6 +59,33 @@ class JwtAuth{
         return $data;// response()->json($data, $data['code']);
 
     }
+
+    public function checkToken($jwt, $getIdentity = false){
+        $auth = false;
+        try{
+            $decoded = JWT::decode($jwt, $this->key, ['HS256']);
+        }catch(\UnexpectedValueException $e){
+            $auth = false;
+        }catch(\DomainException $e){
+            $auth = false;
+        }
+        
+        if(!empty($decoded) && is_object($decoded) && isset($decoded->id)){
+            $auth = true;
+        }else{
+            $auth = false;
+        }
+
+        if($getIdentity){
+            return $decoded;
+        }
+
+        return $auth;
+
+    }
+
+
+
 }
 
 
