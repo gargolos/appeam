@@ -66,8 +66,10 @@ class UserController extends Controller
             $pwd = hash('sha256', $params->password); 
             //devolver el token
             echo $pwd;
-            die();
+            echo $params->user;
             $signup = $jwtAuth->signup($params->user, $pwd);
+            echo $signup;
+            die();
             if(!empty($params->gettoken)){
                 $signup = $jwtAuth->signup($params->user, $pwd, true);
             }
