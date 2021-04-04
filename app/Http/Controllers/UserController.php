@@ -52,8 +52,7 @@ class UserController extends Controller
             'user' => 'required|string',
             'password' => 'required',
         ]);
-        echo $params_array;
-            die();
+
         if($validate->fails()){
             //La validacion a fallado
             $signup = array(
@@ -66,6 +65,8 @@ class UserController extends Controller
             //cifrar el password
             $pwd = hash('sha256', $params->password); 
             //devolver el token
+            echo $pwd;
+            die();
             $signup = $jwtAuth->signup($params->user, $pwd);
             if(!empty($params->gettoken)){
                 $signup = $jwtAuth->signup($params->user, $pwd, true);
