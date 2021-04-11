@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -17,7 +18,10 @@ class ScheduleController extends Controller
 
     public function index(){
         //entrega todo sin que revise a que ciudad pertence
-        $horarios = Schedules::all();
+        $horarios = DB::table('horarios') 
+        ->join('ciudades','horarios.id_ciudad','=', 'ciudades.id')
+        ->select(['hora_inicio','hora_fin', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->get();
 
         return response()->json([
             'code' => 200,

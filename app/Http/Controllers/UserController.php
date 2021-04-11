@@ -65,14 +65,15 @@ class UserController extends Controller
             //cifrar el password
             $pwd = hash('sha256', $params->password); 
             //devolver el token
-            echo $pwd;
-            echo $params->user;
+            //echo $pwd;
+            //echo $params->user;
             $signup = $jwtAuth->signup($params->user, $pwd);
-            echo $signup;
-            die();
+
             if(!empty($params->gettoken)){
                 $signup = $jwtAuth->signup($params->user, $pwd, true);
             }
+            echo $signup;
+
         }
         //var_dump($pwd); die();
         return response()->json($signup, 200);
@@ -168,6 +169,10 @@ class UserController extends Controller
     }
 
     public function update($id, Request $request){
+        $token =$request->header('Authorization');
+        $jwtAuth = new \App\Helpers\JwtAuth();
+        $checkToken = $jwtAuth->checkToken($token);
+
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 

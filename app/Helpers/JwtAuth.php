@@ -2,6 +2,11 @@
 
 namespace App\Helpers;
 
+require_once __DIR__ . '/../../vendor/firebase/jwt/src/BeforeValidException.php';
+require_once __DIR__ . '/../../vendor/firebase/jwt/src/ExpiredException.php';
+require_once __DIR__ . '/../../vendor/firebase/jwt/src/SignatureInvalidException.php';
+require_once __DIR__ . '/../../vendor/firebase/jwt/src/JWT.php';
+
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\DB;
 use App\User;
@@ -63,6 +68,7 @@ class JwtAuth{
     public function checkToken($jwt, $getIdentity = false){
         $auth = false;
         try{
+            $jwt =str_replace('"','', $jwt);
             $decoded = JWT::decode($jwt, $this->key, ['HS256']);
         }catch(\UnexpectedValueException $e){
             $auth = false;
