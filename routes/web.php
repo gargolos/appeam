@@ -40,5 +40,7 @@ Route::get('/api/scheduleofc/{id}', 'ScheduleController@getSchedulesOfCity');
 Route::resource('/api/shift', 'ShiftsController');
 Route::get('/api/shiftofc/{id}', 'ShiftsController@getShiftsOfCity');
 
+Route::resource('/api/component', 'ComponentController');
+
 Route::resource('/api/user', 'UserController');
 Route::post('/api/user/login', 'UserController@login');

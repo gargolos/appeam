@@ -11,7 +11,10 @@ class Shifts extends Model
         'id'
     ];
     //relacion de uno a muchos
-    public function users(){
-        return $this->hasMany('App\User');
+   // public function users(){
+   //     return $this->hasMany('App\User');
+   // }
+    public function ciudad(){
+        return $this->belongsTo('App\Cities', 'id_ciudad' );
     }
 }
