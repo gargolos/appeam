@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Access extends Model
 {
-    protected $table = 'acceso';
+    protected $table = 'accesos';
     protected $fillable = [
         'id'
     ];

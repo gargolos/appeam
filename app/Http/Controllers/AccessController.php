@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -15,7 +16,13 @@ class AccessController extends Controller
     }
 
     public function index(){
-        $accesos = Access::all();
+        //$accesos = Access::all();
+
+        $accesos = DB::table('accesos') 
+        ->join('roles','accesos.ref_rol','=', 'roles.ref')
+        ->join('componentes','accesos.ref_componente','=', 'componentes.ref') 
+        ->select(['ref_rol', 'roles.nombre as rol', 'ref_componente','componentes.nombre as componente', 'visible' ])
+        ->get();
 
         return response()->json([
             'code' => 200,
