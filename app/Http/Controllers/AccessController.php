@@ -56,8 +56,8 @@ class AccessController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'id_roles' => 'numeric',
-                'id_componentes' => 'numeric',
+                'ref_roles' => 'numeric',
+                'ref_componentes' => 'numeric',
                 'visible' => 'numeric',
             ]);
   
@@ -101,8 +101,8 @@ class AccessController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'id_roles' => 'numeric',
-                'id_componentes' => 'numeric',
+                'ref_roles' => 'numeric',
+                'ref_componentes' => 'numeric',
                 'visible' => 'numeric',
             ]);
 
