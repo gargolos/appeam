@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../vendor/firebase/jwt/src/ExpiredException.php';
 require_once __DIR__ . '/../../vendor/firebase/jwt/src/SignatureInvalidException.php';
 require_once __DIR__ . '/../../vendor/firebase/jwt/src/JWT.php';
 
+
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\DB;
 use App\User;

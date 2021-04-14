@@ -44,3 +44,6 @@ Route::resource('/api/component', 'ComponentController');
 
 Route::resource('/api/user', 'UserController');
 Route::post('/api/user/login', 'UserController@login');
+
+Route::resource('/api/rol', 'RolesController');
+Route::resource('/api/access', 'AccessController');

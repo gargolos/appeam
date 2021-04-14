@@ -72,7 +72,7 @@ class UserController extends Controller
             if(!empty($params->gettoken)){
                 $signup = $jwtAuth->signup($params->user, $pwd, true);
             }
-            echo $signup;
+           // echo $signup;
 
         }
         //var_dump($pwd); die();
