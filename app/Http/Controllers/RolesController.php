@@ -66,7 +66,7 @@ class RolesController extends Controller
 
                 $rol = new Roles();
                 $rol->nombre = $params_array['nombre'];
-
+                $rol->ref = $params_array['ref'];
                 $rol->save();
                 
                 $data =[
@@ -113,7 +113,7 @@ class RolesController extends Controller
                 unset($params_array['id']);
 
                 $rol->nombre = $params_array['nombre'];
-
+                $rol->ref = $params_array['ref'];
                 $rol->save();
                
                 $data =[

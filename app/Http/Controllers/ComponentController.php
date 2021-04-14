@@ -65,15 +65,15 @@ class ComponentController extends Controller
                 );            
             }else{
 
-                $ciudad = new Components();
-                $ciudad->nombre = $params_array['nombre'];
-
-                $ciudad->save();
+                $componente = new Components();
+                $componente->nombre = $params_array['nombre'];
+                $componente->ref = $params_array['ref'];
+                $componente->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'ciudad' => $ciudad
+                    'componente' => $componente
                 ];
                 
             }
@@ -110,17 +110,17 @@ class ComponentController extends Controller
             }else{
 
 
-                $ciudad =  Components::firstOrNew (['id'=> $id]);
+                $componente =  Components::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $ciudad->nombre = $params_array['nombre'];
-
-                $ciudad->save();
+                $componente->nombre = $params_array['nombre'];
+                $componente->ref = $params_array['ref'];
+                $componente->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'ciudad' => $ciudad
+                    'componente' => $componente
                 ];
                 
             }
@@ -138,14 +138,14 @@ class ComponentController extends Controller
     }
 
     public function destroy($id, Request $request){
-        $ciudad = Components::find($id);
-        if(!empty($ciudad)){
-            $ciudad->delete();
+        $componente = Components::find($id);
+        if(!empty($componente)){
+            $componente->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $ciudad
+                'componentes' => $componente
             ];
         }else{
             $data =[

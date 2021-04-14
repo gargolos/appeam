@@ -73,8 +73,9 @@ class AccessController extends Controller
             }else{
 
                 $accesos = new Access();
-                $accesos->nombre = $params_array['nombre'];
-
+                $accesos->ref_rol = $params_array['ref_rol'];
+                $accesos->ref_componente = $params_array['ref_componente'];
+                $accesos->status = $params_array['status'];
                 $accesos->save();
                 
                 $data =[
@@ -121,7 +122,9 @@ class AccessController extends Controller
                 $accesos =  Access::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $accesos->nombre = $params_array['nombre'];
+                $accesos->ref_rol = $params_array['ref_rol'];
+                $accesos->ref_componente = $params_array['ref_componente'];
+                $accesos->status = $params_array['status'];
 
                 $accesos->save();
                
