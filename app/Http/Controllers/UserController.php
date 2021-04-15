@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -78,6 +79,37 @@ class UserController extends Controller
         //var_dump($pwd); die();
         return response()->json($signup, 200);
     }
+
+    public function accesoaComponentes($id_rol){
+        //$usuario = User::find($id_rol);
+        //$usuario->id_rol
+        $accesos = DB::table('componentes')
+        ->join('accesos','accesos.ref_componente','=', 'componentes.ref')
+        ->join('roles','accesos.ref_rol','=', 'roles.ref')
+        ->join('users','users.id_rol','=', 'roles.id')
+        ->select(['componentes.id as id','componentes.nombre as nombre','componentes.ref as ref' ])
+        ->where('users.id_rol', '=', $id_rol )
+        ->get();
+    
+  
+
+        if(is_object($accesos)){
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'accesos' => $accesos
+            ];
+        }else{
+            $data =[
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'El accesos no se ha localizado'
+            ];
+        }
+        return response()->json($data, $data['code']);
+
+    }
+
 
     public function datosSesion(Request $request){
       //  $params_array = json_decode($jwtAuth->signup($user, $pwd,true), true);
@@ -247,6 +279,7 @@ class UserController extends Controller
         return response()->json($data, $data['code']);
     }
 
+       
    
 
 

@@ -42,8 +42,9 @@ Route::get('/api/shiftofc/{id}', 'ShiftsController@getShiftsOfCity');
 
 Route::resource('/api/component', 'ComponentController');
 
-Route::resource('/api/user', 'UserController');
 Route::post('/api/user/login', 'UserController@login');
+Route::get('/api/user/accesacomp/{id_rol}', 'UserController@accesoaComponentes');
+Route::resource('/api/user', 'UserController');
 
 Route::resource('/api/rol', 'RolesController');
 Route::resource('/api/access', 'AccessController');
