@@ -10,4 +10,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-incServer.php
+
+#Por los archivos de requeridos para iniciar el JWAuth
+/app/Helpers/incServer.php
