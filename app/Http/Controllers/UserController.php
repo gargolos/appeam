@@ -14,7 +14,7 @@ use App\User;
 class UserController extends Controller
 {
     public function __construct(){
-        //$this->middleware('api.auth', ['except' =>['index', 'show']]);
+        $this->middleware('api.auth', ['except' =>['index', 'show','login']]);
     }
 
     public function register(Request $request){
