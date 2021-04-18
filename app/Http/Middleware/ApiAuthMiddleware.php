@@ -15,7 +15,7 @@ class ApiAuthMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $token =$request->header('Authorization');
+        $token =$request->header('Authorization','No Token');
         $jwtAuth = new \App\Helpers\JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
         
