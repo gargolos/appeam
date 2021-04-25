@@ -44,7 +44,7 @@ Route::resource('/api/component', 'ComponentController');
 
 Route::post('/api/user/login', 'UserController@login');
 Route::get('/api/user/accesacomp/{id_rol}', 'UserController@accesoaComponentes');
-Route::resource('/api/user', 'UserController')->middleware(\App\Http\Middleware\ApiAuthMiddleware::class);
+Route::resource('/api/user', 'UserController');//->middleware(\App\Http\Middleware\ApiAuthMiddleware::class);
 
 Route::resource('/api/rol', 'RolesController');
 Route::resource('/api/access', 'AccessController');
