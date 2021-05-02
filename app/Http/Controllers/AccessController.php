@@ -57,7 +57,7 @@ class AccessController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'ref_roles' => 'numeric',
-                'ref_componentes' => 'numeric',
+                'ref_componente' => 'numeric',
                 'status' => 'numeric',
             ]);
   
@@ -103,7 +103,7 @@ class AccessController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'ref_roles' => 'numeric',
-                'ref_componentes' => 'numeric',
+                'ref_componente' => 'numeric',
                 'status' => 'numeric',
             ]);
 
