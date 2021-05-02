@@ -21,7 +21,7 @@ class AccessController extends Controller
         $accesos = DB::table('accesos') 
         ->join('roles','accesos.ref_rol','=', 'roles.ref')
         ->join('componentes','accesos.ref_componente','=', 'componentes.ref') 
-        ->select(['id','ref_rol', 'roles.nombre as rol', 'ref_componente','componentes.nombre as componente', 'status' ])
+        ->select(['roles.id as id','ref_rol', 'roles.nombre as rol', 'ref_componente','componentes.nombre as componente', 'status' ])
         ->get();
 
         return response()->json([
@@ -58,7 +58,7 @@ class AccessController extends Controller
             $validate = Validator::make($params_array, [
                 'ref_roles' => 'numeric',
                 'ref_componentes' => 'numeric',
-                'visible' => 'numeric',
+                'status' => 'numeric',
             ]);
   
 
@@ -104,7 +104,7 @@ class AccessController extends Controller
             $validate = Validator::make($params_array, [
                 'ref_roles' => 'numeric',
                 'ref_componentes' => 'numeric',
-                'visible' => 'numeric',
+                'status' => 'numeric',
             ]);
 
 
