@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -17,8 +18,11 @@ class LocationController extends Controller
 
     public function index(){
         //entrega todo sin que revise a que ciudad pertence
-        $ubicacions = Locations::all();
-
+       // $ubicacions = Locations::all();
+        $ubicacions = DB::table('ubicaciones') 
+        ->join('ciudades','ubicaciones.id_ciudad','=', 'ciudades.id')
+        ->select(['ubicaciones.nombre as ubicacion', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->get();
         return response()->json([
             'code' => 200,
             'status' => 'success',
@@ -29,6 +33,7 @@ class LocationController extends Controller
 
     public function show($id){
         $ubicacion = Locations::find($id);
+
         if(is_object($ubicacion)){
             $data =[
                 'code' => 200,

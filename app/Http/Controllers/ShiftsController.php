@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -18,7 +18,14 @@ class ShiftsController extends Controller
 
     public function index(){
         //entrega todo sin que revise a que ciudad pertence
-        $turnos = Shifts::all();
+        //$turnos = Shifts::all();
+
+        $turnos = DB::table('turnos') 
+        ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
+        ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+        ->join('horarios','turnos.id_horario','=', 'horarios.id')
+        ->select(['turnos.id', 'dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion','turnos.id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->get();
 
         return response()->json([
             'code' => 200,
