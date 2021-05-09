@@ -20,6 +20,9 @@ Route::get('/', function () {
 Route::get('/test', 'PruebasController@testORM');
 
 Route::resource('/api/participant', 'ParticipantController');
+Route::get('/api/candidates', 'ParticipantController@candidates');
+
+
 Route::resource('/api/city', 'CityController');
 Route::resource('/api/report', 'ReportController');
 

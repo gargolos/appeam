@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -333,6 +333,37 @@ class ParticipantController extends Controller
             return 0;
         } else { return $participante->count();}
 
+    }
+
+    public function candidates(){
+    
+        
+        $candidates1 = DB::table('participantes') 
+        ->whereNotExists(function ($query){
+            $query->select(DB::raw(1))
+                ->from('asignadoa')
+            ->whereColumn('asignadoa.id_participante', 'participantes.id');
+        })
+        ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('0 as asignados') ]);
+
+        
+      $candidates = DB::table('participantes') 
+          ->whereExists(function ($query){
+            $query->select(DB::raw(1))
+                ->from('asignadoa')
+                ->whereColumn('asignadoa.id_participante', 'participantes.id');
+                })
+        ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('1 as asignados') ])
+        ->union($candidates1)
+        ->get();
+
+
+        return response()->json([
+            'code' => 200,
+            'status' => 'success',
+            'turnos' => $candidates
+        ]);
+        
     }
 
 
