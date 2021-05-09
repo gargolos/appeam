@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use  Illuminate\Support\Facades\Validator;
+
+use App\Assigned;
+
+class AssignerToController extends Controller
+{
+   
+    public function index()
+    {
+      $assignado = Assigned::all();
+
+      $assignado = DB::table('asignadoa') 
+      ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
+      ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
+      ->select(['asignadoa.id_turno', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+      ->get();
+    
+      return response()->json([
+          'code' => 200,
+          'status' => 'success',
+          'assignado' => $assignado
+      ]);
+      
+    }
+
+    public function show($id){
+        $assignado = Assigned::find($id);
+        if(is_object($assignado)){
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'assignado' => $assignado
+            ];
+        }else{
+            $data =[
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'El acceso no se ha localizado'
+            ];
+        }
+        return response()->json($data, $data['code']);
+    }
+
+    
+    public function store(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'id_turno' => 'numeric',
+                'id_participante' => 'numeric',
+            ]);
+  
+
+            if($validate->fails()){
+                //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'La asignacion no se ha creado',
+                    'errors' => $validate->errors()
+                );            
+            }else{
+
+                $assignado = new Assigned();
+                $assignado->id_turno = $params_array['id_turno'];
+                $assignado->id_participante = $params_array['id_participante'];
+                $assignado->save();
+                
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'assignado' => $assignado
+                ];
+                
+            }
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos de la asignacion'
+            ];
+        }
+        return response()->json($data, $data['code']);
+
+    }
+
+    public function update($id, Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'id_turno' => 'numeric',
+                'id_participante' => 'numeric',
+            ]);
+
+
+            if($validate->fails()){
+                //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'La asignacion no se ha creado',
+                    'errors' => $validate->errors()
+                );            
+            }else{
+
+
+                $assignado =  Assigned::firstOrNew (['id'=> $id]);
+                unset($params_array['id']);
+
+                $assignado->id_turno = $params_array['id_turno'];
+                $assignado->id_participante = $params_array['id_participante'];
+                $assignado->save();
+
+               
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'assignado' => $assignado
+                ];
+                
+            }
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos de la asignacion'
+            ];
+        }
+        return response()->json($data, $data['code']);
+
+
+
+    }
+
+    public function destroy($id, Request $request){
+        $assignado = Assigned::find($id);
+        if(!empty($assignado)){
+            $assignado->delete();
+               
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'assignado' => $assignado
+            ];
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'La asignacion no existe.'
+            ];
+        }
+        return response()->json($data, $data['code']);
+    }
+}

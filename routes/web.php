@@ -51,3 +51,5 @@ Route::resource('/api/user', 'UserController');//->middleware(\App\Http\Middlewa
 
 Route::resource('/api/rol', 'RolesController');
 Route::resource('/api/access', 'AccessController');
+
+Route::resource('/api/assigned', 'AssignerToController');
