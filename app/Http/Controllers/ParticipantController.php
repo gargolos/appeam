@@ -361,7 +361,7 @@ class ParticipantController extends Controller
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'turnos' => $candidates
+            'candidatos' => $candidates
         ]);
         
     }
