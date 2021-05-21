@@ -16,7 +16,9 @@ class ShiftsController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
+    public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
         //entrega todo sin que revise a que ciudad pertence
         //$turnos = Shifts::all();
 
@@ -24,7 +26,8 @@ class ShiftsController extends Controller
         ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
         ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
         ->join('horarios','turnos.id_horario','=', 'horarios.id')
-        ->select(['turnos.id', 'dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion','turnos.id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->select(['turnos.id',  'dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion','turnos.id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->where('turnos.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
 
         return response()->json([

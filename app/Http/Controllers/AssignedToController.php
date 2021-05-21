@@ -9,7 +9,7 @@ use  Illuminate\Support\Facades\Validator;
 
 use App\Assigned;
 
-class AssignerToController extends Controller
+class AssignedToController extends Controller
 {
    
     public function index()
@@ -18,10 +18,12 @@ class AssignerToController extends Controller
 
       $assignado = DB::table('asignadoa') 
       ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
+      ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+      ->join('horarios','turnos.id_horario','=', 'horarios.id')
       ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-      ->select(['asignadoa.id_turno', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+      ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
       ->get();
-    
+
       return response()->json([
           'code' => 200,
           'status' => 'success',
