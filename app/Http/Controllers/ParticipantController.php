@@ -346,7 +346,35 @@ class ParticipantController extends Controller
     public function candidates(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
-  
+
+        if (isset($params_array['id_ubicacion'])){  
+            $candidates1 = DB::table('participantes') 
+            ->whereNotExists(function ($query){
+                $query->select(DB::raw(1))
+                    ->from('asignadoa')
+                ->whereColumn('asignadoa.id_participante', 'participantes.id');
+            })          
+            ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('0 as asignados') ])
+            ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad']);
+           
+          $candidates = DB::table('participantes') 
+              ->whereExists(function ($query){
+                $query->select(DB::raw(1))
+                    ->from('asignadoa')
+                    ->whereColumn('asignadoa.id_participante', 'participantes.id');
+                    })
+            ->join('asignadoa','participantes.id','=', 'asignadoa.id_participante')  
+            ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
+            ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+                  
+            ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('1 as asignados') ])
+            ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
+            ->where('ubicaciones.id', '=',  $params_array['id_ubicacion'])
+            ->union($candidates1)
+            ->get();
+    
+        }else{
+
         $candidates1 = DB::table('participantes') 
         ->whereNotExists(function ($query){
             $query->select(DB::raw(1))
@@ -366,7 +394,7 @@ class ParticipantController extends Controller
         ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
         ->union($candidates1)
         ->get();
-
+    }
 
         return response()->json([
             'code' => 200,

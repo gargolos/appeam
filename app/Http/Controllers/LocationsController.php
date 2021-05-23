@@ -14,7 +14,7 @@ class LocationsController extends Controller
     public function __construct(){
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
-
+/*
     public function index(){
         //entrega todo sin que revise a que ciudad pertence
         $ubicacions = Locations::all();
@@ -182,7 +182,7 @@ class LocationsController extends Controller
            return response()->json($data, $data['code']);
 
     }
-
+*/
 
 
 }

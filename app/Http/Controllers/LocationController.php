@@ -16,12 +16,16 @@ class LocationController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
+    public function index(Request $request){
         //entrega todo sin que revise a que ciudad pertence
        // $ubicacions = Locations::all();
+       $json = $request->input('json', null);
+       $params_array = json_decode($json, true);
+
         $ubicacions = DB::table('ubicaciones') 
         ->join('ciudades','ubicaciones.id_ciudad','=', 'ciudades.id')
         ->select(['ubicaciones.nombre as ubicacion', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
         return response()->json([
             'code' => 200,
