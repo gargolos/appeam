@@ -25,8 +25,16 @@ class ParticipantController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
-        $participantes = Participants::all();
+    public function index(Request $request){
+        //$participantes = Participants::all();
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        $participantes = DB::table('participantes') 
+        ->select(['*'])
+        ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+
+
 
         return response()->json([
             'code' => 200,
