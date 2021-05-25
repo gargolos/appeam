@@ -79,8 +79,8 @@ class ShiftsController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'horario' => 'required',
-                'ubicacion' => 'required',
+                'id_horario' => 'required',
+                'id_ubicacion' => 'required',
                 'ciudad' => 'required|alpha',
                 'dia' => 'required|numeric',
                 'capacidad' => 'required|numeric',
@@ -112,7 +112,7 @@ class ShiftsController extends Controller
                 $turno->id_ubicacion = $params_array['id_ubicacion'];
                 $turno->dia = $params_array['dia'];
                 $turno->capacidad = $params_array['capacidad'];
-                //$turno->save();
+                $turno->save();
                 
                 $data =[
                     'code' => 200,
@@ -138,8 +138,8 @@ class ShiftsController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'horario' => 'required',
-                'ubicacion' => 'required',
+                'id_horario' => 'required',
+                'id_ubicacion' => 'required',
                 'ciudad' => 'required|alpha',
                 'dia' => 'required|numeric',
                 'capacidad' => 'required|numeric',
@@ -166,7 +166,7 @@ class ShiftsController extends Controller
                 $turno->capacidad = $params_array['capacidad'];
 
 
-                //$turno->save();
+                $turno->save();
                
                 $data =[
                     'code' => 200,
