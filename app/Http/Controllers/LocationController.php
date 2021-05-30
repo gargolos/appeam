@@ -24,7 +24,7 @@ class LocationController extends Controller
 
         $ubicacions = DB::table('ubicaciones') 
         ->join('ciudades','ubicaciones.id_ciudad','=', 'ciudades.id')
-        ->select(['ubicaciones.nombre as ubicacion', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->select(['ubicaciones.id as id', 'ubicaciones.nombre as ubicacion', 'id_ciudad',  'ciudades.nombre as ciudad' ])
         ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
         return response()->json([
