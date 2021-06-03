@@ -21,14 +21,14 @@ class AssignedToController extends Controller
       if (isset($params_array['id_ubicacion'])){  
 
       $assignado = DB::table('asignadoa') 
-      ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
-      ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
-      ->join('horarios','turnos.id_horario','=', 'horarios.id')
-      ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-      ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
-      ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
-      ->where('ubicaciones.id_ubicacion', '=',  $params_array['id_ubicacion'])
-      ->get();
+        ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
+        ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+        ->join('horarios','turnos.id_horario','=', 'horarios.id')
+        ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->where('ubicaciones.id', '=',  $params_array['id_ubicacion'])
+        ->get();
       }else{
         $assignado = DB::table('asignadoa') 
         ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
