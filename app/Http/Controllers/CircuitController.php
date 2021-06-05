@@ -5,7 +5,7 @@
 namespace App\Http\Controllers;
 
 
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -27,16 +27,26 @@ class CircuitController extends Controller
 
 
 
-    public function index(){
-        //entrega todo sin que revise a que ciudad pertence
-        $circuitos = Circuits::all();
-
-        return response()->json([
-            'code' => 200,
-            'status' => 'success',
-            'circuitos' => $circuitos
-        ]);
- 
+    public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
+      $circuitos = DB::table('circuitos') 
+        ->select(['*'])
+        ->where('circuitos.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+      }else{
+        $circuitos = DB::table('circuitos') 
+        ->select(['*'])
+        ->get();   
+      }
+      return response()->json([
+        'code' => 200,
+        'status' => 'success',
+        'circuitos' => $circuitos
+    ]);
     }
 
 
