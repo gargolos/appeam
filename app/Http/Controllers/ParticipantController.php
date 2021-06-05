@@ -236,6 +236,7 @@ class ParticipantController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
+                    'id_circuito' => $id_circuito,
                     'message' => 'El participante no se ha creado, el circuito o la ciudad no existen en la base de datos.',
                 );
             }else{
