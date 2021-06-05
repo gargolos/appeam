@@ -30,7 +30,8 @@ class ParticipantController extends Controller
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
         $participantes = DB::table('participantes') 
-        ->select(['*'])
+        ->join('circuitos','participantes.id_circuito','=', 'circuitos.id')
+        ->select(['participantes.*', 'circuitos.nombre as circuito'])
         ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
 
