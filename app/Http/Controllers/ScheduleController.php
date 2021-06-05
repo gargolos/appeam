@@ -16,13 +16,25 @@ class ScheduleController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
+   public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
         //entrega todo sin que revise a que ciudad pertence
         $horarios = DB::table('horarios') 
         ->join('ciudades','horarios.id_ciudad','=', 'ciudades.id')
         ->select(['hora_inicio','hora_fin', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->where('horarios.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
 
+    }else { 
+        $horarios = DB::table('horarios') 
+        ->join('ciudades','horarios.id_ciudad','=', 'ciudades.id')
+        ->select(['hora_inicio','hora_fin', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->get();
+      }
         return response()->json([
             'code' => 200,
             'status' => 'success',

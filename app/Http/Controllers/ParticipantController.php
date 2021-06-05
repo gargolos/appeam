@@ -192,7 +192,7 @@ class ParticipantController extends Controller
                 't' => 'string|max:15',
                 'c' => 'string|max:15',
                 'congregacion' => 'string|max:40',
-                'id_circuito' => 'required',
+                'circuito' => 'required|string',
                 'nacimiento' => 'required|date',
                 'bautismo' => 'date',
                 'sexo' => 'alpha|starts_with:M,F',
@@ -213,15 +213,15 @@ class ParticipantController extends Controller
             //$ciudad = new Cities();                
             //$id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
-            //$circuit = new Circuits();                
-            //$id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
+            $circuit = new Circuits();                
+            $id_circuito = $circuit->ret_ID($params_array['circuito'], $params_array['id_ciudad']); //buscar el id
            // $ciudad = new Cities();                
            // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
            // $circuit = new Circuits();                
            // $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
             $id_ciudad= $params_array['id_ciudad'];
-            $id_circuito=$params_array['id_circuito'];
+            //$id_circuito=$params_array['id_circuito'];
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
