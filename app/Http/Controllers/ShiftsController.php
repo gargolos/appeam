@@ -81,14 +81,14 @@ class ShiftsController extends Controller
             $validate = Validator::make($params_array, [
                 'id_horario' => 'required',
                 'id_ubicacion' => 'required',
-                'ciudad' => 'required|alpha',
+                'id_ciudad' => 'required',
                 'dia' => 'required|numeric',
                 'capacidad' => 'required|numeric',
             ]);
   
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+            //$ciudad = new Cities();                
+            //$id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -98,16 +98,10 @@ class ShiftsController extends Controller
                     'message' => 'El turno no se ha creado',
                     'errors' => $validate->errors()
                 );
-            }elseif( $id_ciudad==0 ) {
-                $data = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'El turno no se ha creado, la ciudad no existe en la base de datos.',
-                );
             }else{
 
                 $turno = new Shifts();
-                $turno->id_ciudad = $id_ciudad ; //buscar el id
+                $turno->id_ciudad = $params_array['id_ciudad']; 
                 $turno->id_horario = $params_array['id_horario'];
                 $turno->id_ubicacion = $params_array['id_ubicacion'];
                 $turno->dia = $params_array['dia'];
@@ -140,7 +134,6 @@ class ShiftsController extends Controller
             $validate = Validator::make($params_array, [
                 'id_horario' => 'required',
                 'id_ubicacion' => 'required',
-                'ciudad' => 'required|alpha',
                 'dia' => 'required|numeric',
                 'capacidad' => 'required|numeric',
             ]);
@@ -191,7 +184,7 @@ class ShiftsController extends Controller
     public function destroy($id, Request $request){
         $turno = Shifts::find($id);
         if(!empty($turno)){
-         //   $turno->delete();
+            $turno->delete();
                
             $data =[
                 'code' => 200,
