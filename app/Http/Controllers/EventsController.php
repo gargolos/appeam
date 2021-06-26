@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
 use App\Events;
-
+use App\Cities;
 
 class EventsController extends Controller
 {
@@ -67,8 +67,10 @@ class EventsController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'descripcion' => 'required|string',
+                'ciudad' => 'required|string',
             ]);
-  
+            $ciudad = new Cities();                
+            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -78,11 +80,18 @@ class EventsController extends Controller
                     'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
+            }elseif( $id_ciudad==0 ) {
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'El evento no se ha creado, la ciudad no existe en la base de datos.',
+                );
             }else{
 
                 $evento = new Events();
                 $evento->descripcion = $params_array['descripcion'];
-
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $id_ciudad;
                 $evento->save();
                 
                 $data =[
@@ -110,9 +119,13 @@ class EventsController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'descripcion' => 'required|string',
+                'ciudad' => 'required|string',
             ]);
 
 
+            $ciudad = new Cities();                
+            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
+            
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
@@ -121,6 +134,12 @@ class EventsController extends Controller
                     'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
+            }elseif( $id_ciudad==0 ) {
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'El evento no se ha creado, la ciudad no existe en la base de datos.',
+                );
             }else{
 
 
@@ -128,6 +147,8 @@ class EventsController extends Controller
                 unset($params_array['id']);
 
                 $evento->descripcion = $params_array['descripcion'];
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $id_ciudad;
 
                 $evento->save();
                
@@ -146,8 +167,6 @@ class EventsController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
-
-
 
     }
 
@@ -170,7 +189,5 @@ class EventsController extends Controller
         }
         return response()->json($data, $data['code']);
     }
-
-
 
 }
