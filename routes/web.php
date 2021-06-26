@@ -53,3 +53,6 @@ Route::resource('/api/rol', 'RolesController');
 Route::resource('/api/access', 'AccessController');
 
 Route::resource('/api/assigned', 'AssignedToController');
+
+Route::resource('/api/events', 'EventsController');
+
