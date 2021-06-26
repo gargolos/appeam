@@ -32,10 +32,7 @@ class TrainingsController extends Controller
     }
 
     public function show($id){
-        $capacitaciones = DB::table('capacitaciones') 
-        ->select(['*'])
-        ->where('id_evento', '=',  $id)
-        ->get();
+        $capacitaciones = Trainings::find($id);
 
         if(is_object($capacitaciones)){
             $data =[
