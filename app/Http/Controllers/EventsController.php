@@ -66,7 +66,7 @@ class EventsController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
+                'descripcion' => 'required|string',
             ]);
   
 
@@ -81,7 +81,7 @@ class EventsController extends Controller
             }else{
 
                 $evento = new Events();
-                $evento->nombre = $params_array['nombre'];
+                $evento->descripcion = $params_array['descripcion'];
 
                 $evento->save();
                 
@@ -109,7 +109,7 @@ class EventsController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
+                'descripcion' => 'required|string',
             ]);
 
 
@@ -127,7 +127,7 @@ class EventsController extends Controller
                 $evento =  Events::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $evento->nombre = $params_array['nombre'];
+                $evento->descripcion = $params_array['descripcion'];
 
                 $evento->save();
                
