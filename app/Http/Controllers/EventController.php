@@ -7,44 +7,54 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Trainings;
+use App\Events;
+use App\Cities;
 
-class TrainingsController extends Controller
+class EventController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
         
- 
-    $capacitaciones = Trainings::all(); 
-      
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
+
+        $eventos = DB::table('eventos') 
+        ->select(['*'])
+        ->where('eventos.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+      }else{
+        $eventos = Events::all(); 
+      }
       return response()->json([
         'code' => 200,
         'status' => 'success',
-        'capacitaciones' => $capacitaciones
+        'eventos' => $eventos
     ]);
 
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'capacitaciones' => $capacitaciones
+            'eventos' => $eventos
         ]);
         
     }
 
     public function show($id){
-        $capacitaciones = Trainings::find($id);
-
-        if(is_object($capacitaciones)){
+        $eventos = Events::find($id);
+        if(is_object($eventos)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'capacitaciones' => $capacitaciones
+                'eventos' => $eventos
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'La capacitacion no se ha localizado'
+                'message' => 'El evento no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -56,8 +66,8 @@ class TrainingsController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'id_evento' => 'required',
-                'id_participante' => 'required',
+                'descripcion' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
           //  $ciudad = new Cities();                
            // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
@@ -67,21 +77,21 @@ class TrainingsController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La capacitacion no se ha creado',
+                    'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $capacitacion = new Trainings();
-                $capacitacion->id_evento = $params_array['id_evento'];
-                $capacitacion->fecha = $params_array['fecha'];
-                $capacitacion->id_participante = $params_array['id_participante'];
-                $capacitacion->save();
+                $evento = new Events();
+                $evento->descripcion = $params_array['descripcion'];
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $params_array['id_ciudad'];
+                $evento->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'capacitacion' => $capacitacion
+                    'evento' => $evento
                 ];
                 
             }
@@ -89,7 +99,7 @@ class TrainingsController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos de la capacitacion'
+                'message' => 'No se han enviado los datos de la evento'
             ];
         }
         return response()->json($data, $data['code']);
@@ -102,8 +112,8 @@ class TrainingsController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'id_evento' => 'required',
-                'id_participante' => 'required',
+                'descripcion' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
 
 
@@ -113,24 +123,25 @@ class TrainingsController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La capacitacion no se ha creado',
+                    'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $capacitacion =  Trainings::firstOrNew (['id'=> $id]);
+                $evento =  Events::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-                $capacitacion->id_evento = $params_array['id_evento'];
-                $capacitacion->fecha = $params_array['fecha'];
-                $capacitacion->id_participante = $params_array['id_participante'];
 
-                $capacitacion->save();
+                $evento->descripcion = $params_array['descripcion'];
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $params_array['id_ciudad'];
+
+                $evento->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'capacitacion' => $capacitacion
+                    'evento' => $evento
                 ];
                 
             }
@@ -138,30 +149,31 @@ class TrainingsController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos de la capacitacion'
+                'message' => 'No se han enviado los datos de la evento'
             ];
         }
         return response()->json($data, $data['code']);
 
     }
 
-    public function destroy($id, Request $request){
-        $capacitacion = Trainings::find($id);
-        if(!empty($capacitacion)){
-            $capacitacion->delete();
+    public function destroy($id){
+        $evento = Events::find($id);
+        if(!empty($evento)){
+            $evento->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'capacitaciones' => $capacitacion
+                'eventos' => $evento
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La capacitacion no existe.'
+                'message' => 'El evento no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
+
 }

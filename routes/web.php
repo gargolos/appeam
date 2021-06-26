@@ -54,6 +54,7 @@ Route::resource('/api/access', 'AccessController');
 
 Route::resource('/api/assigned', 'AssignedToController');
 
-Route::resource('/api/event', 'EventsController');
-Route::resource('/api/training', 'TrainingsController');
+Route::resource('/api/event', 'EventController');
+Route::resource('/api/training', 'TrainingController');
+Route::resource('/api/experience', 'ExperienceController');
 

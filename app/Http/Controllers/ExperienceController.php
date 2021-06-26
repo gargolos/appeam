@@ -2,59 +2,48 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Events;
-use App\Cities;
+use App\Experiences;
 
-class EventsController extends Controller
+class ExperienceController extends Controller
 {
-    public function index(Request $request){
-        
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
-    
-      //$assignado = Assigned::all();
-      if (isset($params_array['id_ciudad'])){ 
-
-        $eventos = DB::table('eventos') 
-        ->select(['*'])
-        ->where('eventos.id_ciudad', '=',  $params_array['id_ciudad'])
-        ->get();
-      }else{
-        $eventos = Events::all(); 
-      }
+    public function index(){
+  
+        $experiencias = Experiences::all(); 
+      
       return response()->json([
         'code' => 200,
         'status' => 'success',
-        'eventos' => $eventos
+        'experiencias' => $experiencias
     ]);
 
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'eventos' => $eventos
+            'experiencias' => $experiencias
         ]);
         
     }
 
     public function show($id){
-        $eventos = Events::find($id);
-        if(is_object($eventos)){
+        $experiencias = Experiences::find($id);
+        if(is_object($experiencias)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'eventos' => $eventos
+                'experiencias' => $experiencias
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El evento no se ha localizado'
+                'message' => 'La experiencia no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -66,7 +55,6 @@ class EventsController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'descripcion' => 'required|string',
                 'id_ciudad' => 'required',
             ]);
           //  $ciudad = new Cities();                
@@ -77,21 +65,26 @@ class EventsController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El evento no se ha creado',
+                    'message' => 'La experiencia no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $evento = new Events();
-                $evento->descripcion = $params_array['descripcion'];
-                $evento->fecha = $params_array['fecha'];
-                $evento->id_ciudad = $params_array['id_ciudad'];
-                $evento->save();
+                $experiencia = new Experiences();
+                
+                $experiencia->fecha = $params_array['fecha'];
+                $experiencia->nombre = $params_array['nombre'];
+                $experiencia->correo = $params_array['correo'];
+                $experiencia->descripcion = $params_array['descripcion'];
+                $experiencia->imagen = $params_array['imagen'];
+                $experiencia->id_participante = $params_array['id_participante'];
+                $experiencia->id_ciudad = $params_array['id_ciudad'];
+                $experiencia->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'evento' => $evento
+                    'experiencia' => $experiencia
                 ];
                 
             }
@@ -99,7 +92,7 @@ class EventsController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos de la evento'
+                'message' => 'No se han enviado los datos de la experiencia'
             ];
         }
         return response()->json($data, $data['code']);
@@ -112,7 +105,6 @@ class EventsController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'descripcion' => 'required|string',
                 'id_ciudad' => 'required',
             ]);
 
@@ -123,25 +115,29 @@ class EventsController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El evento no se ha creado',
+                    'message' => 'La experiencia no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $evento =  Events::firstOrNew (['id'=> $id]);
+                $experiencia =  Experiences::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $evento->descripcion = $params_array['descripcion'];
-                $evento->fecha = $params_array['fecha'];
-                $evento->id_ciudad = $params_array['id_ciudad'];
+                $experiencia->fecha = $params_array['fecha'];
+                $experiencia->nombre = $params_array['nombre'];
+                $experiencia->correo = $params_array['correo'];
+                $experiencia->descripcion = $params_array['descripcion'];
+                $experiencia->imagen = $params_array['imagen'];
+                $experiencia->id_participante = $params_array['id_participante'];
+                $experiencia->id_ciudad = $params_array['id_ciudad'];
 
-                $evento->save();
+                $experiencia->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'evento' => $evento
+                    'experiencia' => $experiencia
                 ];
                 
             }
@@ -149,31 +145,30 @@ class EventsController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos de la evento'
+                'message' => 'No se han enviado los datos de la experiencia'
             ];
         }
         return response()->json($data, $data['code']);
 
     }
 
-    public function destroy($id, Request $request){
-        $evento = Events::find($id);
-        if(!empty($evento)){
-            $evento->delete();
+    public function destroy($id){
+        $experiencia = Experiences::find($id);
+        if(!empty($experiencia)){
+            $experiencia->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'eventos' => $evento
+                'experiencias' => $experiencia
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La evento no existe.'
+                'message' => 'La experiencia no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
 }
