@@ -67,10 +67,10 @@ class EventsController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'descripcion' => 'required|string',
-                'ciudad' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+          //  $ciudad = new Cities();                
+           // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -80,18 +80,12 @@ class EventsController extends Controller
                     'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
-            }elseif( $id_ciudad==0 ) {
-                $data = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'El evento no se ha creado, la ciudad no existe en la base de datos.',
-                );
             }else{
 
                 $evento = new Events();
                 $evento->descripcion = $params_array['descripcion'];
                 $evento->fecha = $params_array['fecha'];
-                $evento->id_ciudad = $id_ciudad;
+                $evento->id_ciudad = $params_array['id_ciudad'];
                 $evento->save();
                 
                 $data =[
@@ -119,13 +113,11 @@ class EventsController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'descripcion' => 'required|string',
-                'ciudad' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
 
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
-            
+
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
@@ -134,12 +126,6 @@ class EventsController extends Controller
                     'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
-            }elseif( $id_ciudad==0 ) {
-                $data = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'El evento no se ha creado, la ciudad no existe en la base de datos.',
-                );
             }else{
 
 
@@ -148,7 +134,7 @@ class EventsController extends Controller
 
                 $evento->descripcion = $params_array['descripcion'];
                 $evento->fecha = $params_array['fecha'];
-                $evento->id_ciudad = $id_ciudad;
+                $evento->id_ciudad = $params_array['id_ciudad'];
 
                 $evento->save();
                
