@@ -12,9 +12,13 @@ use App\Trainings;
 class TrainingController extends Controller
 {
     public function index(){
-        
+        $capacitaciones = DB::table('capacitaciones') 
+        ->join('eventos','capacitaciones.id_evento','=', 'eventos.id')
+        ->join('participantes','capacitaciones.id_participante','=', 'participantes.id') 
+        ->select(['capacitaciones.id as id', 'capacitaciones.fecha as fecha','participantes.n as participante_n', 'participantes.ap as participante_ap','participantes.am as participante_am', 'participantes.id as id_participante', 'eventos.descripcion as descripcion', 'eventos.id as id_evento', 'eventos.fecha as fecha_evento',])
+        ->get();
  
-    $capacitaciones = Trainings::all(); 
+    //$capacitaciones = Trainings::all(); 
       
       return response()->json([
         'code' => 200,
