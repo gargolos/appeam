@@ -239,7 +239,7 @@ class UserController extends Controller
 
                 $usuario =  User::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-                $usuario = new User();
+              
                 $usuario->user = $params_array['user'];
                 $usuario->email = $params_array['email'];
                 //valida que exista para realiar el cambió
