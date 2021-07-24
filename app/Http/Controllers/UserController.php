@@ -154,12 +154,12 @@ class UserController extends Controller
                 'user' => 'required|string|unique:users',
                 'email' => 'required|string',
                 'password' => 'required',
-                'ciudad' => 'alpha',
+                'id_ciudad' => 'reuired|numeric',
                 'image' => 'string'
             ]);
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+           // $ciudad = new Cities();                
+            //$id_ciudad = $params_array['ciudad']; //buscar el id
   
 
                if($validate->fails()){
@@ -170,11 +170,11 @@ class UserController extends Controller
                     'message' => 'El usuario no se ha creado',
                     'errors' => $validate->errors()
                 );
-            }elseif( $id_ciudad==0 ) {
+            }elseif( $params_array['ciudad']==0 ) {
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'id_ciudad' => $id_ciudad,
+                    'id_ciudad' => $params_array['ciudad'],
                     'message' => 'El participante no se ha creado,  la ciudad no existen en la base de datos.',
                 );
             }else{
@@ -187,7 +187,7 @@ class UserController extends Controller
                 $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 $usuario->id_participante = $params_array['id_participante'];
-                $usuario->id_ciudad = $id_ciudad;
+                $usuario->id_ciudad = $params_array['ciudad'];
                 $usuario->id_rol = 0;
 
 
@@ -222,6 +222,8 @@ class UserController extends Controller
                 'user' => 'required|string|unique:users',
                 'email' => 'required|string',
                 'password' => 'required',
+                'id_ciudad' => 'reuired|numeric',
+                'image' => 'string'
             ]);
 
 
@@ -238,15 +240,13 @@ class UserController extends Controller
 
                 $usuario =  User::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-                $id_ciudad= $params_array['id_ciudad'];
-
                 $usuario = new User();
                 $usuario->user = $params_array['user'];
                 $usuario->email = $params_array['email'];
                 $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 $usuario->id_participante = $params_array['id_participante'];
-                $usuario->id_ciudad = $id_ciudad;
+                $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = $params_array['id_rol'];
 
                 $usuario->save();
