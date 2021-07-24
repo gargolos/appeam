@@ -154,7 +154,7 @@ class UserController extends Controller
                 'user' => 'required|string|unique:users',
                 'email' => 'required|string',
                 'password' => 'required',
-                'id_ciudad' => 'reuired|numeric',
+                'id_ciudad' => 'required|numeric',
                 'image' => 'string'
             ]);
 
@@ -222,7 +222,7 @@ class UserController extends Controller
                 'user' => 'required|string|unique:users',
                 'email' => 'required|string',
                 'password' => 'required',
-                'id_ciudad' => 'reuired|numeric',
+                'id_ciudad' => 'required|numeric',
                 'image' => 'string'
             ]);
 

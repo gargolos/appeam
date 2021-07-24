@@ -92,7 +92,7 @@ class ParticipantController extends Controller
                 'sab' => 'numeric',
                 'dom' => 'numeric',
                 'foto' => 'string|max:255',
-                'id_ciudad' => 'reuired|numeric',
+                'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
                 'observaciones' => 'string',   
                 'ppeamId' => 'numeric'
@@ -100,7 +100,7 @@ class ParticipantController extends Controller
             
 
                            
-            $id_ciudad = $params_array['id_ciudad']; //buscar el id
+            $id_ciudad = $params_array['ciudad']; //buscar el id
   
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
