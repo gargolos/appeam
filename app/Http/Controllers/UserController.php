@@ -170,11 +170,11 @@ class UserController extends Controller
                     'message' => 'El usuario no se ha creado',
                     'errors' => $validate->errors()
                 );
-            }elseif( $params_array['ciudad']==0 ) {
+            }elseif( $params_array['id_ciudad']==0 ) {
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'id_ciudad' => $params_array['ciudad'],
+                    'id_ciudad' => $params_array['id_ciudad'],
                     'message' => 'El participante no se ha creado,  la ciudad no existen en la base de datos.',
                 );
             }else{
@@ -187,7 +187,7 @@ class UserController extends Controller
                 $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 $usuario->id_participante = $params_array['id_participante'];
-                $usuario->id_ciudad = $params_array['ciudad'];
+                $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = 0;
 
 
