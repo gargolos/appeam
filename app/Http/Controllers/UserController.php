@@ -8,8 +8,7 @@ use  Illuminate\Support\Facades\Validator;
 
 use App\Cities;
 use App\User;
-
-
+use Psy\CodeCleaner\IssetPass;
 
 class UserController extends Controller
 {
@@ -221,7 +220,7 @@ class UserController extends Controller
             $validate = Validator::make($params_array, [
                 'user' => 'required|string|unique:users',
                 'email' => 'required|string',
-                'password' => 'required',
+                'password' => 'string',
                 'id_ciudad' => 'required|numeric',
                 'image' => 'string'
             ]);
@@ -243,7 +242,10 @@ class UserController extends Controller
                 $usuario = new User();
                 $usuario->user = $params_array['user'];
                 $usuario->email = $params_array['email'];
-                $usuario->password = hash('sha256', $params_array['password']);
+                //valida que exista para realiar el cambió
+                if(isset($params_array['password'])){
+                    $usuario->password = hash('sha256', $params_array['password']);
+                }
                 $usuario->image = $params_array['image'];
                 $usuario->id_participante = $params_array['id_participante'];
                 $usuario->id_ciudad = $params_array['id_ciudad'];
