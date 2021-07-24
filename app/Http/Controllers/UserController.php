@@ -218,7 +218,7 @@ class UserController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'user' => 'required|string|unique:users',
+                'user' => 'required|string',
                 'email' => 'required|string',
                 'password' => 'string',
                 'id_ciudad' => 'required|numeric',
