@@ -166,18 +166,16 @@ class AbsenceController extends Controller
 
     public function id_informe($id_turno, $sem){
         
-        //$json = $request->input('json', null);
-        //$params_array = json_decode($json, true);
- 
-         $id = DB::table('informes') 
-         ->select(['id'])
+          $id = DB::table('informes') 
+         ->select(['id as id_inf'])
          ->where('semana', '=',  $sem)
          ->where('id_turno', '=',  $id_turno)
          ->get();
+
          return response()->json([
              'code' => 200,
              'status' => 'success',
-             'id_informe' => $id
+             'id_informe' =>$id[0]->id_inf
          ]);
 
     }
