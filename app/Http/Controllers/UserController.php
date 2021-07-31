@@ -150,7 +150,7 @@ class UserController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'user' => 'required|string|unique:users',
+                'user' => 'required|string',
                 'email' => 'required|string',
                 'password' => 'required',
                 'id_ciudad' => 'required|numeric',
@@ -185,7 +185,8 @@ class UserController extends Controller
                 //$usuario->password = password_hash($params_array['password'], PASSWORD_BCRYPT, ['cost'=>4]);
                 $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
-                $usuario->id_participante = $params_array['id_participante'];
+                
+                $usuario->id_participante = isset($params_array['id_participante']) ? $params_array['id_participante']:1;
                 $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = 0;
 
@@ -218,7 +219,7 @@ class UserController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'user' => 'required|string',
+                'user' => 'required|string|unique:users,user,' . $id,
                 'email' => 'required|string',
                 'password' => 'string',
                 'id_ciudad' => 'required|numeric',
@@ -247,7 +248,8 @@ class UserController extends Controller
                     $usuario->password = hash('sha256', $params_array['password']);
                 }
                 $usuario->image = $params_array['image'];
-                $usuario->id_participante = $params_array['id_participante'];
+                $usuario->id_participante = isset($params_array['id_participante']) ? $params_array['id_participante']:1;
+
                 $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = $params_array['id_rol'];
 
