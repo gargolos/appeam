@@ -172,12 +172,21 @@ class AbsenceController extends Controller
          ->where('id_turno', '=',  $id_turno)
          ->get();
 
-         return response()->json([
-             'code' => 200,
-             'status' => 'success',
-             'id_informe' =>$id[0]->id_inf
-         ]);
-
+    
+         if(!empty($id[0]->id_inf)){               
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'id_informe' =>$id[0]->id_inf
+            ];
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El id no se encontro.'
+            ];
+        }
+        return response()->json($data, $data['code']);
     }
 
     
