@@ -177,26 +177,9 @@ class AbsenceController extends Controller
          return response()->json([
              'code' => 200,
              'status' => 'success',
-             'ubicacions' => $id
+             'id_informe' => $id
          ]);
 
-                
-        if(!empty($ausencia)){
-         //   $ausencia->delete();
-               
-            $data =[
-                'code' => 200,
-                'status' => 'success',
-                'ausencias' => $id
-            ];
-        }else{
-            $data =[
-                'code' => 400,
-                'status' => 'error',
-                'message' => 'El id no se localiza.'
-            ];
-        }
-        return response()->json($data, $data['code']);
     }
 
     
