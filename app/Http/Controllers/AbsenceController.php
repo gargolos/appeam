@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
 use App\Absences;
+use App\Reports;
 
 class AbsenceController extends Controller
 {
@@ -163,4 +164,40 @@ class AbsenceController extends Controller
         return response()->json($data, $data['code']);
     }
 
+    public function id_informe($id_turno, $sem){
+        
+        //$json = $request->input('json', null);
+        //$params_array = json_decode($json, true);
+ 
+         $id = DB::table('informes') 
+         ->select(['id'])
+         ->where('semana', '=',  $sem)
+         ->where('id_turno', '=',  $id_turno)
+         ->get();
+         return response()->json([
+             'code' => 200,
+             'status' => 'success',
+             'ubicacions' => $id
+         ]);
+
+                
+        if(!empty($ausencia)){
+         //   $ausencia->delete();
+               
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'ausencias' => $id
+            ];
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El id no se localiza.'
+            ];
+        }
+        return response()->json($data, $data['code']);
+    }
+
+    
 }
