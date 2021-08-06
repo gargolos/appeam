@@ -87,7 +87,7 @@ class ReportController extends Controller
             }else{
 
                 $informe = new Reports();
-                //$informe->save();
+                $informe->save();
                 
                 $data =[
                     'code' => 200,
@@ -143,7 +143,7 @@ class ReportController extends Controller
                 $informe =  Reports::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
      
-                //$informe->save();
+                $informe->save();
                
                 $data =[
                     'code' => 200,
@@ -168,7 +168,7 @@ class ReportController extends Controller
     public function destroy($id, Request $request){
         $informe = Reports::find($id);
         if(!empty($informe)){
-         //   $informe->delete();
+            $informe->delete();
                
             $data =[
                 'code' => 200,
