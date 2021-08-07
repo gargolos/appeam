@@ -92,6 +92,7 @@ class ReportController extends Controller
                 $informe->fecha = $params_array['fecha'];
                 $informe->id_turno = $params_array['id_turno'];
                 $informe->id_user = $params_array['id_user'];
+                $informe->semana = $params_array['semana'];
                 $informe->actividad = $params_array['actividad'];
                 $informe->libros = $params_array['libros'];
                 $informe->revistas = $params_array['revistas'];
@@ -163,6 +164,7 @@ class ReportController extends Controller
                 $informe->fecha = $params_array['fecha'];
                 $informe->id_turno = $params_array['id_turno'];
                 $informe->id_user = $params_array['id_user'];
+                $informe->semana = $params_array['semana'];
                 $informe->actividad = $params_array['actividad'];
                 $informe->libros = $params_array['libros'];
                 $informe->revistas = $params_array['revistas'];
