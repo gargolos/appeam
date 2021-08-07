@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Unique;
 
 use App\Participants;
 
@@ -59,10 +60,13 @@ class ReportController extends Controller
     public function store(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+
+        $id_turno =  $params_array['id_turno'];
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
-                'semana'    => 'required|numeric',	
+                'semana'    => 'required|numeric|unique:informes,semana, id,0,id_turno,' . $id_turno,	
                 'id_turno'	=> 'required|numeric',
                 'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
@@ -128,11 +132,12 @@ class ReportController extends Controller
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 
+        $id_turno =  $params_array['id_turno'];
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
-                'semana'    => 'required|numeric',	
-                'id_turno'	=> 'required|numeric',
+                'semana'    => 'required|numeric|unique:informes,semana,' . $id . ',id,id_turno,' . $id_turno,
                 'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
