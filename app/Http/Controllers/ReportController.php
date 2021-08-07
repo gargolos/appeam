@@ -63,7 +63,8 @@ class ReportController extends Controller
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
                 'semana'    => 'required|numeric',	
-                'id_turno'	=> 'required|alpha_num',
+                'id_turno'	=> 'required|numeric',
+                'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
                 'revistas'	=> 'numeric',
@@ -87,6 +88,21 @@ class ReportController extends Controller
             }else{
 
                 $informe = new Reports();
+
+                $informe->fecha = $params_array['fecha'];
+                $informe->id_turno = $params_array['id_turno'];
+                $informe->id_user = $params_array['id_user'];
+                $informe->actividad = $params_array['actividad'];
+                $informe->libros = $params_array['libros'];
+                $informe->revistas = $params_array['revistas'];
+                $informe->folletos = $params_array['folletos'];
+                $informe->videos = $params_array['videos'];
+                $informe->revisitas = $params_array['revisitas'];
+                $informe->cursos = $params_array['cursos'];
+                $informe->tratados = $params_array['tratados'];
+                $informe->tarjetas = $params_array['tarjetas'];
+                $informe->observaciones = $params_array['observaciones'];    
+
                 $informe->save();
                 
                 $data =[
@@ -115,7 +131,8 @@ class ReportController extends Controller
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
                 'semana'    => 'required|numeric',	
-                'id_turno'	=> 'required|alpha_num',
+                'id_turno'	=> 'required|numeric',
+                'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
                 'revistas'	=> 'numeric',
@@ -142,7 +159,20 @@ class ReportController extends Controller
 
                 $informe =  Reports::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-     
+
+                $informe->fecha = $params_array['fecha'];
+                $informe->id_turno = $params_array['id_turno'];
+                $informe->id_user = $params_array['id_user'];
+                $informe->actividad = $params_array['actividad'];
+                $informe->libros = $params_array['libros'];
+                $informe->revistas = $params_array['revistas'];
+                $informe->folletos = $params_array['folletos'];
+                $informe->videos = $params_array['videos'];
+                $informe->revisitas = $params_array['revisitas'];
+                $informe->cursos = $params_array['cursos'];
+                $informe->tratados = $params_array['tratados'];
+                $informe->tarjetas = $params_array['tarjetas'];
+                $informe->observaciones = $params_array['observaciones'];    
                 $informe->save();
                
                 $data =[
