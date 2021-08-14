@@ -78,7 +78,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'observaciones' => 'alpha_num'
+              //  'observaciones' => 'alpha_num'
             ]);
   
             if($validate->fails()){
@@ -148,7 +148,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'observaciones' => 'alpha_num'
+              //  'observaciones' => 'alpha_num'
             ]);
 
 
