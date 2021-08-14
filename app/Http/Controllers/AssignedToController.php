@@ -180,4 +180,27 @@ class AssignedToController extends Controller
         }
         return response()->json($data, $data['code']);
     }
+
+    public function shift_index( $id_turno){
+
+      if (!empty($id_turno)){  
+      $data = DB::table('asignadoa') 
+        ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+        ->join('horarios','turnos.id_horario','=', 'horarios.id')
+        ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->where('asignadoa.id_turnos', '=',  $id_turno)
+        ->get();
+      }else{
+        $data =[
+            'code' => 400,
+            'status' => 'error',
+            'message' => 'No se encontraron participantes para el turno.'
+        ];
+      }
+
+      return response()->json($data, $data['code']);
+      
+    }
+
 }

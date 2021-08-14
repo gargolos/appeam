@@ -53,6 +53,8 @@ Route::resource('/api/rol', 'RolesController');
 Route::resource('/api/access', 'AccessController');
 
 Route::resource('/api/assigned', 'AssignedToController');
+Route::get('/api/shift_assigned/{id_turno}', 'AssignedToController@shift_index');
+
 
 Route::resource('/api/event', 'EventController');
 Route::resource('/api/training', 'TrainingController');
