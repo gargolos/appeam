@@ -183,24 +183,28 @@ class AssignedToController extends Controller
 
     public function shift_index( $id_turno){
 
-      if (!empty($id_turno)){  
-      $data = DB::table('asignadoa') 
-        ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
-        ->join('horarios','turnos.id_horario','=', 'horarios.id')
+      $assignados = DB::table('asignadoa') 
         ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-        ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
-        ->where('asignadoa.id_turnos', '=',  $id_turno)
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' , 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->where('asignadoa.id_turno', '=',  $id_turno)
         ->get();
-      }else{
+   
+
+      if(is_object($assignados)){
         $data =[
-            'code' => 400,
+            'code' => 200,
+            'status' => 'success',
+            'asignados' => $assignados
+        ];
+    }else{
+        $data =[
+            'code' => 404,
             'status' => 'error',
             'message' => 'No se encontraron participantes para el turno.'
         ];
-      }
+    }
+    return response()->json($data, $data['code']);
 
-      return response()->json($data, $data['code']);
-      
     }
 
 }
