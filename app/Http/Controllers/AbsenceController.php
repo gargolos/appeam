@@ -192,7 +192,7 @@ class AbsenceController extends Controller
     public function abs_id_informe($id_informe){
         
         $ausencias = DB::table('ausencias') 
-       ->select(['id_participante']) 
+       ->select(['id', 'id_participante']) 
        ->where('id_informe', '=',  $id_informe)
        ->get();
 
