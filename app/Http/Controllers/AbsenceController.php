@@ -189,5 +189,28 @@ class AbsenceController extends Controller
         return response()->json($data, $data['code']);
     }
 
+    public function abs_id_informe($id_informe){
+        
+        $ausencias = DB::table('ausencias') 
+       ->select(['id_participante']) 
+       ->where('id_informe', '=',  $id_informe)
+       ->get();
+
+  
+       if(is_object($ausencias)){            
+          $data =[
+              'code' => 200,
+              'status' => 'success',
+              'ausencias' => $ausencias
+          ];
+      }else{
+          $data =[
+              'code' => 400,
+              'status' => 'error',
+              'message' => 'El id de informe no se encontro.'
+          ];
+      }
+      return response()->json($data, $data['code']);
+  }
     
 }

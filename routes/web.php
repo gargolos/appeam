@@ -62,3 +62,4 @@ Route::resource('/api/training', 'TrainingController');
 Route::resource('/api/experience', 'ExperienceController');
 Route::resource('/api/absence', 'AbsenceController');
 Route::get('/api/absence/{id_turno}/{sem}', 'AbsenceController@id_informe');
+Route::get('/api/absence_pinf/{id_informe}', 'AbsenceController@abs_id_informe');
