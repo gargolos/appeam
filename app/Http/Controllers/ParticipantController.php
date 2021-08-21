@@ -35,14 +35,27 @@ class ParticipantController extends Controller
         ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
 
+        if(is_object($participantes)){
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'asignados' => $participantes
+            ];
+        }else{
+            $data =[
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'No se encontraron participantes'
+            ];
+        }
+        return response()->json($data, $data['code']);
 
-
-        return response()->json([
+       /*  return response()->json([
             'code' => 200,
             'status' => 'successII',
             'participant' => $participantes
-        ]);
-        
+        ]); */
+        return response()->json($data, $data['code']);
     }
 
 
