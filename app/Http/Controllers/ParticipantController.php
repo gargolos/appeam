@@ -94,6 +94,7 @@ class ParticipantController extends Controller
                 'foto' => 'string|max:255',
                 'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
+                'fecha_registro' => 'date',
                 'observaciones' => 'string',   
                 'ppeamId' => 'numeric'
             ]);
@@ -150,6 +151,7 @@ class ParticipantController extends Controller
                 $participante->foto = $this->validaDefault($params_array['foto'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
+                //$participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
                
                 $mydate=$params_array['nacimiento'];
@@ -207,6 +209,7 @@ class ParticipantController extends Controller
                 'foto' => 'string|max:255',
                 'id_ciudad' => 'required',
                 'estado' => 'numeric',
+                'fecha_registro' => 'date',
                 'observaciones' => 'string',   
                 'ppeamId' => 'numeric'
             ]);
@@ -274,6 +277,7 @@ class ParticipantController extends Controller
                 $participante->foto = $this->validaDefault($params_array['foto'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
+                $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
                
                 //$mydate=$params_array['nacimiento'];
