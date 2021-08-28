@@ -39,7 +39,7 @@ class ParticipantController extends Controller
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'asignados' => $participantes
+                'participant' => $participantes
             ];
         }else{
             $data =[
@@ -54,8 +54,8 @@ class ParticipantController extends Controller
             'code' => 200,
             'status' => 'successII',
             'participant' => $participantes
-        ]); */
-        return response()->json($data, $data['code']);
+        ]); 
+        return response()->json($data, $data['code']);*/
     }
 
 
