@@ -86,7 +86,7 @@ class ParticipantController extends Controller
             $validate = Validator::make($params_array, [
                 'n' => 'required|alpha_num',
                 'ap' => 'required|alpha_num',
-                'am' => 'required|alpha_num',
+                'am' => 'alpha_num',
                 'ac' => 'alpha_num',
                 'e' => 'email',
                 't' => 'string|max:15',
@@ -201,7 +201,7 @@ class ParticipantController extends Controller
             $validate = Validator::make($params_array, [
                 'n' => 'required|alpha_num',
                 'ap' => 'required|alpha_num',
-                'am' => 'required|alpha_num',
+                'am' => 'alpha_num',
                 'ac' => 'alpha_num',
                 'e' => 'email',
                 't' => 'string|max:15',
