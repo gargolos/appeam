@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Unique;
 
 use App\Participants;
 
@@ -59,11 +60,15 @@ class ReportController extends Controller
     public function store(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+
+        $id_turno =  $params_array['id_turno'];
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
-                'semana'    => 'required|numeric',	
-                'id_turno'	=> 'required|alpha_num',
+                'semana'    => 'required|numeric|unique:informes,semana, id,0,id_turno,' . $id_turno,	
+                'id_turno'	=> 'required|numeric',
+                'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
                 'revistas'	=> 'numeric',
@@ -73,7 +78,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'observaciones' => 'alpha_num'
+              //  'observaciones' => 'alpha_num'
             ]);
   
             if($validate->fails()){
@@ -87,7 +92,23 @@ class ReportController extends Controller
             }else{
 
                 $informe = new Reports();
-                //$informe->save();
+
+                $informe->fecha = $params_array['fecha'];
+                $informe->id_turno = $params_array['id_turno'];
+                $informe->id_user = $params_array['id_user'];
+                $informe->semana = $params_array['semana'];
+                $informe->actividad = $params_array['actividad'];
+                $informe->libros = $params_array['libros'];
+                $informe->revistas = $params_array['revistas'];
+                $informe->folletos = $params_array['folletos'];
+                $informe->videos = $params_array['videos'];
+                $informe->revisitas = $params_array['revisitas'];
+                $informe->cursos = $params_array['cursos'];
+                $informe->tratados = $params_array['tratados'];
+                $informe->tarjetas = $params_array['tarjetas'];
+                $informe->observaciones = $params_array['observaciones'];    
+
+                $informe->save();
                 
                 $data =[
                     'code' => 200,
@@ -111,11 +132,13 @@ class ReportController extends Controller
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 
+        $id_turno =  $params_array['id_turno'];
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
-                'semana'    => 'required|numeric',	
-                'id_turno'	=> 'required|alpha_num',
+                'semana'    => 'required|numeric|unique:informes,semana,' . $id . ',id,id_turno,' . $id_turno,
+                'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
                 'revistas'	=> 'numeric',
@@ -125,7 +148,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'observaciones' => 'alpha_num'
+              //  'observaciones' => 'alpha_num'
             ]);
 
 
@@ -142,8 +165,22 @@ class ReportController extends Controller
 
                 $informe =  Reports::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-     
-                //$informe->save();
+
+                $informe->fecha = $params_array['fecha'];
+                $informe->id_turno = $params_array['id_turno'];
+                $informe->id_user = $params_array['id_user'];
+                $informe->semana = $params_array['semana'];
+                $informe->actividad = $params_array['actividad'];
+                $informe->libros = $params_array['libros'];
+                $informe->revistas = $params_array['revistas'];
+                $informe->folletos = $params_array['folletos'];
+                $informe->videos = $params_array['videos'];
+                $informe->revisitas = $params_array['revisitas'];
+                $informe->cursos = $params_array['cursos'];
+                $informe->tratados = $params_array['tratados'];
+                $informe->tarjetas = $params_array['tarjetas'];
+                $informe->observaciones = $params_array['observaciones'];    
+                $informe->save();
                
                 $data =[
                     'code' => 200,
@@ -168,7 +205,7 @@ class ReportController extends Controller
     public function destroy($id, Request $request){
         $informe = Reports::find($id);
         if(!empty($informe)){
-         //   $informe->delete();
+            $informe->delete();
                
             $data =[
                 'code' => 200,

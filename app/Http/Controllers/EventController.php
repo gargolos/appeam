@@ -2,43 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Components;
+use App\Events;
+use App\Cities;
 
-class ComponentController extends Controller
+class EventController extends Controller
 {
+    public function index(Request $request){
+        
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
 
-    public function __construct(){
-        //$this->middleware('api.auth', ['except' =>['index', 'show']]);
-    }
+        $eventos = DB::table('eventos') 
+        ->select(['*'])
+        ->where('eventos.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+      }else{
+        $eventos = Events::all(); 
+      }
+      return response()->json([
+        'code' => 200,
+        'status' => 'success',
+        'eventos' => $eventos
+    ]);
 
-    public function index(){
-        $componentes = Components::all();
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'componentes' => $componentes
+            'eventos' => $eventos
         ]);
         
     }
 
     public function show($id){
-        $componentes = Components::find($id);
-        if(is_object($componentes)){
+        $eventos = Events::find($id);
+        if(is_object($eventos)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componentes
+                'eventos' => $eventos
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El componente no se ha localizado'
+                'message' => 'El evento no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -50,30 +66,32 @@ class ComponentController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'descripcion' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
-  
+          //  $ciudad = new Cities();                
+           // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La componente no se ha creado',
+                    'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $componente = new Components();
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $evento = new Events();
+                $evento->descripcion = $params_array['descripcion'];
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $params_array['id_ciudad'];
+                $evento->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'evento' => $evento
                 ];
                 
             }
@@ -81,7 +99,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la evento'
             ];
         }
         return response()->json($data, $data['code']);
@@ -94,9 +112,10 @@ class ComponentController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'descripcion' => 'required|string',
+                'id_ciudad' => 'required',
             ]);
+
 
 
             if($validate->fails()){
@@ -104,23 +123,25 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El componente no se ha creado',
+                    'message' => 'El evento no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $componente =  Components::firstOrNew (['id'=> $id]);
+                $evento =  Events::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $evento->descripcion = $params_array['descripcion'];
+                $evento->fecha = $params_array['fecha'];
+                $evento->id_ciudad = $params_array['id_ciudad'];
+
+                $evento->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'evento' => $evento
                 ];
                 
             }
@@ -128,36 +149,31 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la evento'
             ];
         }
         return response()->json($data, $data['code']);
 
-
-
     }
 
-    public function destroy($id, Request $request){
-        $componente = Components::find($id);
-        if(!empty($componente)){
-            $componente->delete();
+    public function destroy($id){
+        $evento = Events::find($id);
+        if(!empty($evento)){
+            $evento->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componente
+                'eventos' => $evento
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La componente no existe.'
+                'message' => 'El evento no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
-
-
 
 }

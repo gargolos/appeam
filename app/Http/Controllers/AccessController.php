@@ -2,43 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Components;
+use App\Access;
 
-class ComponentController extends Controller
+class AccessController extends Controller
 {
-
     public function __construct(){
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
     public function index(){
-        $componentes = Components::all();
+        //$accesos = Access::all();
+
+        $accesos = DB::table('accesos') 
+        ->join('roles','accesos.ref_rol','=', 'roles.ref')
+        ->join('componentes','accesos.ref_componente','=', 'componentes.ref') 
+        ->select(['roles.id as id','ref_rol', 'roles.nombre as rol', 'ref_componente','componentes.nombre as componente', 'status' ])
+        ->get();
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'componentes' => $componentes
+            'accesos' => $accesos
         ]);
         
     }
 
     public function show($id){
-        $componentes = Components::find($id);
-        if(is_object($componentes)){
+        $accesos = Access::find($id);
+        if(is_object($accesos)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componentes
+                'accesos' => $accesos
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El componente no se ha localizado'
+                'message' => 'El acceso no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -50,8 +56,9 @@ class ComponentController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'ref_roles' => 'string',
+                'ref_componente' => 'string',
+                'status' => 'numeric',
             ]);
   
 
@@ -60,20 +67,21 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La componente no se ha creado',
+                    'message' => 'La acceso no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $componente = new Components();
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $accesos = new Access();
+                $accesos->ref_rol = $params_array['ref_rol'];
+                $accesos->ref_componente = $params_array['ref_componente'];
+                $accesos->status = $params_array['status'];
+                $accesos->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'accesos' => $accesos
                 ];
                 
             }
@@ -81,7 +89,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos del acceso'
             ];
         }
         return response()->json($data, $data['code']);
@@ -94,8 +102,9 @@ class ComponentController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'ref_roles' => 'string',
+                'ref_componente' => 'string',
+                'status' => 'numeric',
             ]);
 
 
@@ -104,23 +113,25 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El componente no se ha creado',
+                    'message' => 'El acceso no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $componente =  Components::firstOrNew (['id'=> $id]);
+                $accesos =  Access::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $accesos->ref_rol = $params_array['ref_rol'];
+                $accesos->ref_componente = $params_array['ref_componente'];
+                $accesos->status = $params_array['status'];
+
+                $accesos->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'accesos' => $accesos
                 ];
                 
             }
@@ -128,7 +139,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos del acceso'
             ];
         }
         return response()->json($data, $data['code']);
@@ -138,26 +149,22 @@ class ComponentController extends Controller
     }
 
     public function destroy($id, Request $request){
-        $componente = Components::find($id);
-        if(!empty($componente)){
-            $componente->delete();
+        $accesos = Access::find($id);
+        if(!empty($accesos)){
+            $accesos->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componente
+                'accesos' => $accesos
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La componente no existe.'
+                'message' => 'La acceso no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
-
-
-
 }

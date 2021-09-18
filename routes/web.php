@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Middleware\ApiAuthMiddleware;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +20,9 @@ Route::get('/', function () {
 Route::get('/test', 'PruebasController@testORM');
 
 Route::resource('/api/participant', 'ParticipantController');
+Route::get('/api/candidates', 'ParticipantController@candidates');
+
+
 Route::resource('/api/city', 'CityController');
 Route::resource('/api/report', 'ReportController');
 
@@ -40,5 +43,23 @@ Route::get('/api/scheduleofc/{id}', 'ScheduleController@getSchedulesOfCity');
 Route::resource('/api/shift', 'ShiftsController');
 Route::get('/api/shiftofc/{id}', 'ShiftsController@getShiftsOfCity');
 
-Route::resource('/api/user', 'UserController');
+Route::resource('/api/component', 'ComponentController');
+
 Route::post('/api/user/login', 'UserController@login');
+Route::get('/api/user/accesacomp/{id_rol}', 'UserController@accesoaComponentes');
+Route::resource('/api/user', 'UserController');//->middleware(\App\Http\Middleware\ApiAuthMiddleware::class);
+
+Route::resource('/api/rol', 'RolesController');
+Route::resource('/api/access', 'AccessController');
+
+
+Route::resource('/api/assigned', 'AssignedToController');
+Route::get('/api/shift_assigned/{id_turno}', 'AssignedToController@shift_index');
+
+
+Route::resource('/api/event', 'EventController');
+Route::resource('/api/training', 'TrainingController');
+Route::resource('/api/experience', 'ExperienceController');
+Route::resource('/api/absence', 'AbsenceController');
+Route::get('/api/absence/{id_turno}/{sem}', 'AbsenceController@id_informe');
+Route::get('/api/absence_pinf/{id_informe}', 'AbsenceController@abs_id_informe');

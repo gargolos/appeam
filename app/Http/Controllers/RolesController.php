@@ -6,39 +6,38 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Components;
+use App\Roles;
 
-class ComponentController extends Controller
+class RolesController extends Controller
 {
-
     public function __construct(){
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
     public function index(){
-        $componentes = Components::all();
+        $roles = Roles::all();
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'componentes' => $componentes
+            'roles' => $roles
         ]);
         
     }
 
     public function show($id){
-        $componentes = Components::find($id);
-        if(is_object($componentes)){
+        $roles = Roles::find($id);
+        if(is_object($roles)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componentes
+                'roles' => $roles
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El componente no se ha localizado'
+                'message' => 'El rol no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -60,20 +59,20 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La componente no se ha creado',
+                    'message' => 'La rol no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $componente = new Components();
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $rol = new Roles();
+                $rol->nombre = $params_array['nombre'];
+                $rol->ref = $params_array['ref'];
+                $rol->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'rol' => $rol
                 ];
                 
             }
@@ -81,7 +80,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos del rol'
             ];
         }
         return response()->json($data, $data['code']);
@@ -104,23 +103,23 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El componente no se ha creado',
+                    'message' => 'El rol no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $componente =  Components::firstOrNew (['id'=> $id]);
+                $rol =  Roles::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $rol->nombre = $params_array['nombre'];
+                $rol->ref = $params_array['ref'];
+                $rol->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'rol' => $rol
                 ];
                 
             }
@@ -128,7 +127,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos del rol'
             ];
         }
         return response()->json($data, $data['code']);
@@ -138,26 +137,22 @@ class ComponentController extends Controller
     }
 
     public function destroy($id, Request $request){
-        $componente = Components::find($id);
-        if(!empty($componente)){
-            $componente->delete();
+        $rol = Roles::find($id);
+        if(!empty($rol)){
+            $rol->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componente
+                'roles' => $rol
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La componente no existe.'
+                'message' => 'La rol no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
-
-
-
 }

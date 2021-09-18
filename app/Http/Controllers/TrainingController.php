@@ -2,43 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Components;
+use App\Trainings;
 
-class ComponentController extends Controller
+class TrainingController extends Controller
 {
-
-    public function __construct(){
-        //$this->middleware('api.auth', ['except' =>['index', 'show']]);
-    }
-
     public function index(){
-        $componentes = Components::all();
+        $capacitaciones = DB::table('capacitaciones') 
+        ->join('eventos','capacitaciones.id_evento','=', 'eventos.id')
+        ->join('participantes','capacitaciones.id_participante','=', 'participantes.id') 
+        ->select(['capacitaciones.id as id', 'capacitaciones.fecha as fecha','participantes.n as participante_n', 'participantes.ap as participante_ap','participantes.am as participante_am', 'participantes.id as id_participante', 'eventos.descripcion as descripcion', 'eventos.id as id_evento', 'eventos.fecha as fecha_evento',])
+        ->get();
+ 
+    //$capacitaciones = Trainings::all(); 
+      
+      return response()->json([
+        'code' => 200,
+        'status' => 'success',
+        'capacitaciones' => $capacitaciones
+    ]);
+
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'componentes' => $componentes
+            'capacitaciones' => $capacitaciones
         ]);
         
     }
 
     public function show($id){
-        $componentes = Components::find($id);
-        if(is_object($componentes)){
+        $capacitaciones = Trainings::find($id);
+
+        if(is_object($capacitaciones)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componentes
+                'capacitaciones' => $capacitaciones
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El componente no se ha localizado'
+                'message' => 'La capacitacion no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -50,30 +60,32 @@ class ComponentController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'id_evento' => 'required',
+                'id_participante' => 'required',
             ]);
-  
+          //  $ciudad = new Cities();                
+           // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La componente no se ha creado',
+                    'message' => 'La capacitacion no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $componente = new Components();
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $capacitacion = new Trainings();
+                $capacitacion->id_evento = $params_array['id_evento'];
+                $capacitacion->fecha = $params_array['fecha'];
+                $capacitacion->id_participante = $params_array['id_participante'];
+                $capacitacion->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'capacitacion' => $capacitacion
                 ];
                 
             }
@@ -81,7 +93,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la capacitacion'
             ];
         }
         return response()->json($data, $data['code']);
@@ -94,9 +106,10 @@ class ComponentController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'id_evento' => 'required',
+                'id_participante' => 'required',
             ]);
+
 
 
             if($validate->fails()){
@@ -104,23 +117,24 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El componente no se ha creado',
+                    'message' => 'La capacitacion no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $componente =  Components::firstOrNew (['id'=> $id]);
+                $capacitacion =  Trainings::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
+                $capacitacion->id_evento = $params_array['id_evento'];
+                $capacitacion->fecha = $params_array['fecha'];
+                $capacitacion->id_participante = $params_array['id_participante'];
 
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $capacitacion->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'capacitacion' => $capacitacion
                 ];
                 
             }
@@ -128,36 +142,30 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la capacitacion'
             ];
         }
         return response()->json($data, $data['code']);
 
-
-
     }
 
-    public function destroy($id, Request $request){
-        $componente = Components::find($id);
-        if(!empty($componente)){
-            $componente->delete();
+    public function destroy($id){
+        $capacitacion = Trainings::find($id);
+        if(!empty($capacitacion)){
+            $capacitacion->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componente
+                'capacitaciones' => $capacitacion
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La componente no existe.'
+                'message' => 'La capacitacion no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
-
-
-
 }

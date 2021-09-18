@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -15,10 +16,17 @@ class LocationController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
+    public function index(Request $request){
         //entrega todo sin que revise a que ciudad pertence
-        $ubicacions = Locations::all();
+       // $ubicacions = Locations::all();
+       $json = $request->input('json', null);
+       $params_array = json_decode($json, true);
 
+        $ubicacions = DB::table('ubicaciones') 
+        ->join('ciudades','ubicaciones.id_ciudad','=', 'ciudades.id')
+        ->select(['ubicaciones.id as id', 'ubicaciones.nombre as nombre', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
         return response()->json([
             'code' => 200,
             'status' => 'success',
@@ -29,6 +37,7 @@ class LocationController extends Controller
 
     public function show($id){
         $ubicacion = Locations::find($id);
+
         if(is_object($ubicacion)){
             $data =[
                 'code' => 200,

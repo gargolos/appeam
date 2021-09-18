@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -15,10 +16,25 @@ class ScheduleController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
+   public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
         //entrega todo sin que revise a que ciudad pertence
-        $horarios = Schedules::all();
+        $horarios = DB::table('horarios') 
+        ->join('ciudades','horarios.id_ciudad','=', 'ciudades.id')
+        ->select(['horarios.id as id_horarios','hora_inicio','hora_fin', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->where('horarios.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
 
+    }else { 
+        $horarios = DB::table('horarios') 
+        ->join('ciudades','horarios.id_ciudad','=', 'ciudades.id')
+        ->select(['hora_inicio','hora_fin', 'id_ciudad',  'ciudades.nombre as ciudad' ])
+        ->get();
+      }
         return response()->json([
             'code' => 200,
             'status' => 'success',

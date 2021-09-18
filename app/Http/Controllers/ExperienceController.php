@@ -2,43 +2,48 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
-use App\Components;
+use App\Experiences;
 
-class ComponentController extends Controller
+class ExperienceController extends Controller
 {
-
-    public function __construct(){
-        //$this->middleware('api.auth', ['except' =>['index', 'show']]);
-    }
-
     public function index(){
-        $componentes = Components::all();
+  
+        $experiencias = Experiences::all(); 
+      
+      return response()->json([
+        'code' => 200,
+        'status' => 'success',
+        'experiencias' => $experiencias
+    ]);
+
 
         return response()->json([
             'code' => 200,
             'status' => 'success',
-            'componentes' => $componentes
+            'experiencias' => $experiencias
         ]);
         
     }
 
     public function show($id){
-        $componentes = Components::find($id);
-        if(is_object($componentes)){
+        $experiencias = Experiences::find($id);
+        if(is_object($experiencias)){
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componentes
+                'experiencias' => $experiencias
             ];
         }else{
             $data =[
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'El componente no se ha localizado'
+                'message' => 'La experiencia no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
@@ -50,30 +55,36 @@ class ComponentController extends Controller
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'id_ciudad' => 'required',
             ]);
-  
+          //  $ciudad = new Cities();                
+           // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'La componente no se ha creado',
+                    'message' => 'La experiencia no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
-                $componente = new Components();
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $experiencia = new Experiences();
+                
+                $experiencia->fecha = $params_array['fecha'];
+                $experiencia->nombre = $params_array['nombre'];
+                $experiencia->correo = $params_array['correo'];
+                $experiencia->descripcion = $params_array['descripcion'];
+                $experiencia->imagen = $params_array['imagen'];
+                $experiencia->id_participante = $params_array['id_participante'];
+                $experiencia->id_ciudad = $params_array['id_ciudad'];
+                $experiencia->save();
                 
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'experiencia' => $experiencia
                 ];
                 
             }
@@ -81,7 +92,7 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la experiencia'
             ];
         }
         return response()->json($data, $data['code']);
@@ -94,9 +105,9 @@ class ComponentController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'nombre' => 'required|string',
-                'ref' => 'required',
+                'id_ciudad' => 'required',
             ]);
+
 
 
             if($validate->fails()){
@@ -104,23 +115,29 @@ class ComponentController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El componente no se ha creado',
+                    'message' => 'La experiencia no se ha creado',
                     'errors' => $validate->errors()
                 );            
             }else{
 
 
-                $componente =  Components::firstOrNew (['id'=> $id]);
+                $experiencia =  Experiences::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
 
-                $componente->nombre = $params_array['nombre'];
-                $componente->ref = $params_array['ref'];
-                $componente->save();
+                $experiencia->fecha = $params_array['fecha'];
+                $experiencia->nombre = $params_array['nombre'];
+                $experiencia->correo = $params_array['correo'];
+                $experiencia->descripcion = $params_array['descripcion'];
+                $experiencia->imagen = $params_array['imagen'];
+                $experiencia->id_participante = $params_array['id_participante'];
+                $experiencia->id_ciudad = $params_array['id_ciudad'];
+
+                $experiencia->save();
                
                 $data =[
                     'code' => 200,
                     'status' => 'success',
-                    'componente' => $componente
+                    'experiencia' => $experiencia
                 ];
                 
             }
@@ -128,36 +145,30 @@ class ComponentController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del componente'
+                'message' => 'No se han enviado los datos de la experiencia'
             ];
         }
         return response()->json($data, $data['code']);
 
-
-
     }
 
-    public function destroy($id, Request $request){
-        $componente = Components::find($id);
-        if(!empty($componente)){
-            $componente->delete();
+    public function destroy($id){
+        $experiencia = Experiences::find($id);
+        if(!empty($experiencia)){
+            $experiencia->delete();
                
             $data =[
                 'code' => 200,
                 'status' => 'success',
-                'componentes' => $componente
+                'experiencias' => $experiencia
             ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'La componente no existe.'
+                'message' => 'La experiencia no existe.'
             ];
         }
         return response()->json($data, $data['code']);
     }
-
-
-
-
 }

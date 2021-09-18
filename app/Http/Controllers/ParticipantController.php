@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
@@ -25,15 +25,37 @@ class ParticipantController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
-        $participantes = Participants::all();
+    public function index(Request $request){
+        //$participantes = Participants::all();
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        $participantes = DB::table('participantes') 
+        ->join('circuitos','participantes.id_circuito','=', 'circuitos.id')
+        ->select(['participantes.*', 'circuitos.nombre as circuito'])
+        ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
 
-        return response()->json([
+        if(is_object($participantes)){
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'participant' => $participantes
+            ];
+        }else{
+            $data =[
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'No se encontraron participantes'
+            ];
+        }
+        return response()->json($data, $data['code']);
+
+       /*  return response()->json([
             'code' => 200,
             'status' => 'successII',
             'participant' => $participantes
-        ]);
-        
+        ]); 
+        return response()->json($data, $data['code']);*/
     }
 
 
@@ -64,7 +86,7 @@ class ParticipantController extends Controller
             $validate = Validator::make($params_array, [
                 'n' => 'required|alpha_num',
                 'ap' => 'required|alpha_num',
-                'am' => 'required|alpha_num',
+                'am' => 'alpha_num',
                 'ac' => 'alpha_num',
                 'e' => 'email',
                 't' => 'string|max:15',
@@ -83,15 +105,16 @@ class ParticipantController extends Controller
                 'sab' => 'numeric',
                 'dom' => 'numeric',
                 'foto' => 'string|max:255',
-                'ciudad' => 'alpha',
+                'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
+                'fecha_registro' => 'date',
                 'observaciones' => 'string',   
                 'ppeamId' => 'numeric'
             ]);
             
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+                           
+            $id_ciudad = $params_array['id_ciudad']; //buscar el id
   
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
@@ -141,6 +164,7 @@ class ParticipantController extends Controller
                 $participante->foto = $this->validaDefault($params_array['foto'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
+                //$participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
                
                 $mydate=$params_array['nacimiento'];
@@ -177,13 +201,13 @@ class ParticipantController extends Controller
             $validate = Validator::make($params_array, [
                 'n' => 'required|alpha_num',
                 'ap' => 'required|alpha_num',
-                'am' => 'required|alpha_num',
+                'am' => 'alpha_num',
                 'ac' => 'alpha_num',
                 'e' => 'email',
                 't' => 'string|max:15',
                 'c' => 'string|max:15',
                 'congregacion' => 'string|max:40',
-                'id_circuito' => 'required',
+                'circuito' => 'required|string',
                 'nacimiento' => 'required|date',
                 'bautismo' => 'date',
                 'sexo' => 'alpha|starts_with:M,F',
@@ -198,21 +222,22 @@ class ParticipantController extends Controller
                 'foto' => 'string|max:255',
                 'id_ciudad' => 'required',
                 'estado' => 'numeric',
+                'fecha_registro' => 'date',
                 'observaciones' => 'string',   
                 'ppeamId' => 'numeric'
             ]);
             //$ciudad = new Cities();                
             //$id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
-            //$circuit = new Circuits();                
-            //$id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
+            $circuit = new Circuits();                
+            $id_circuito = $circuit->ret_ID($params_array['circuito'], $params_array['id_ciudad']); //buscar el id
            // $ciudad = new Cities();                
            // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
            // $circuit = new Circuits();                
            // $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
             $id_ciudad= $params_array['id_ciudad'];
-            $id_circuito=$params_array['id_circuito'];
+            //$id_circuito=$params_array['id_circuito'];
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
@@ -227,6 +252,7 @@ class ParticipantController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
+                    'id_circuito' => $id_circuito,
                     'message' => 'El participante no se ha creado, el circuito o la ciudad no existen en la base de datos.',
                 );
             }else{
@@ -264,6 +290,7 @@ class ParticipantController extends Controller
                 $participante->foto = $this->validaDefault($params_array['foto'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
+                $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
                
                 //$mydate=$params_array['nacimiento'];
@@ -333,6 +360,67 @@ class ParticipantController extends Controller
             return 0;
         } else { return $participante->count();}
 
+    }
+
+    public function candidates(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        if (isset($params_array['id_ubicacion'])){  
+            $candidates1 = DB::table('participantes') 
+            ->whereNotExists(function ($query){
+                $query->select(DB::raw(1))
+                    ->from('asignadoa')
+                ->whereColumn('asignadoa.id_participante', 'participantes.id');
+            })          
+            ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('0 as asignados') ])
+            ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad']);
+           
+          $candidates = DB::table('participantes') 
+              ->whereExists(function ($query){
+                $query->select(DB::raw(1))
+                    ->from('asignadoa')
+                    ->whereColumn('asignadoa.id_participante', 'participantes.id');
+                    })
+            ->join('asignadoa','participantes.id','=', 'asignadoa.id_participante')  
+            ->join('turnos','asignadoa.id_turno','=', 'turnos.id')
+            ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+                  
+            ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('1 as asignados') ])
+            ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
+            ->where('ubicaciones.id', '=',  $params_array['id_ubicacion'])
+            ->union($candidates1)
+            ->get();
+    
+        }else{
+
+        $candidates1 = DB::table('participantes') 
+        ->whereNotExists(function ($query){
+            $query->select(DB::raw(1))
+                ->from('asignadoa')
+            ->whereColumn('asignadoa.id_participante', 'participantes.id');
+        })
+        ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('0 as asignados') ])
+        ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad']);
+       
+      $candidates = DB::table('participantes') 
+          ->whereExists(function ($query){
+            $query->select(DB::raw(1))
+                ->from('asignadoa')
+                ->whereColumn('asignadoa.id_participante', 'participantes.id');
+                })
+        ->select(['participantes.id', 'participantes.n','participantes.ap','participantes.am','participantes.ac','participantes.id_circuito', DB::raw('1 as asignados') ])
+        ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->union($candidates1)
+        ->get();
+    }
+
+        return response()->json([
+            'code' => 200,
+            'status' => 'success',
+            'candidatos' => $candidates
+        ]);
+        
     }
 
 
