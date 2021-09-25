@@ -77,6 +77,8 @@ class UserController extends Controller
         }
         //var_dump($pwd); die();
         return response()->json($signup, 200);
+
+        
     }
 
     public function accesoaComponentes($id_rol){
