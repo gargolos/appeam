@@ -138,17 +138,17 @@ class CircuitController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-               // 'ciudad' => 'string',
-                'id_ciudad' => 'required|numeric',
+                'id_ciudad' => 'required_without:ciudad|numeric',
+                'ciudad' => 'string',
             ]);
-/*
+
             if (isset($params_array['ciudad'])){ 
                 $ciudad = new Cities();   
               $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
           }else {
                  $id_ciudad = $params_array['id_ciudad'];
           }
-*/
+
         $id_ciudad = $params_array['id_ciudad'];
 
             if($validate->fails()){
@@ -156,7 +156,7 @@ class CircuitController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El circuito no se ha creado UP',
+                    'message' => 'El circuito no se ha creado',
                     'errors' => $validate->errors()
                 );            
 
@@ -178,7 +178,7 @@ class CircuitController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del circuito UP'
+                'message' => 'No se han enviado los datos del circuito'
             ];
         }
 
