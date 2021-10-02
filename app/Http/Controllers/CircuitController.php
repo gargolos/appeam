@@ -110,7 +110,7 @@ class CircuitController extends Controller
                 $circuito = new Circuits();
                 $circuito->id_ciudad = $id_ciudad ; //buscar el id
                 $circuito->nombre = $params_array['nombre'];
-                $circuito->superintendente = $params_array['superintendente'];
+                $circuito->observaciones = $params_array['observaciones'];
                 $circuito->save();
                 
                 $data =[
@@ -165,7 +165,7 @@ class CircuitController extends Controller
                 unset($params_array['id']);
                 $circuito->id_ciudad = $id_ciudad ; //buscar el id
                 $circuito->nombre = $params_array['nombre'];
-                $circuito->superintendente = $params_array['superintendente'];
+                $circuito->observaciones = $params_array['observaciones'];
                 $circuito->save();
                 $data =[
                     'code' => 200,
