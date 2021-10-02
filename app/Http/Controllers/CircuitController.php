@@ -150,13 +150,13 @@ class CircuitController extends Controller
           }else {
                  $id_ciudad = $params_array['id_ciudad'];
           }
-          
+
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El circuito no se ha creado',
+                    'message' => 'El circuito no se ha creado 1',
                     'errors' => $validate->errors()
                 );            
 
