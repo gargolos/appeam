@@ -79,8 +79,8 @@ class CircuitController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-                'id_ciudad' => 'numeric',
-                'ciudad' => 'required_without:id_ciudad|string',
+                'ciudad' => 'string',
+                'id_ciudad' => 'required_without:ciudad|numeric',  
             ]);
 
             if (isset($params_array['ciudad'])){ 
@@ -138,8 +138,8 @@ class CircuitController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-                'id_ciudad' => 'numeric',
-                'ciudad' => 'required_without:id_ciudad|string',
+                'ciudad' => 'string',
+                'id_ciudad' => 'required_without:ciudad|numeric',  
             ]);
 
             if (isset($params_array['ciudad'])){ 
