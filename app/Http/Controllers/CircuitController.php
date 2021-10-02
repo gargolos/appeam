@@ -141,13 +141,15 @@ class CircuitController extends Controller
                // 'ciudad' => 'string',
                 'id_ciudad' => 'required|numeric',
             ]);
-
+/*
             if (isset($params_array['ciudad'])){ 
                 $ciudad = new Cities();   
               $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
           }else {
                  $id_ciudad = $params_array['id_ciudad'];
           }
+*/
+        $id_ciudad = $params_array['id_ciudad'];
 
             if($validate->fails()){
                 //La validacion a fallado
