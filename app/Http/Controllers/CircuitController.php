@@ -79,11 +79,16 @@ class CircuitController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-                'ciudad' => 'required|string',
+                'ciudad' => 'required_without:id_ciudad|string',
+                'id_ciudad' => 'required_without:ciudad|numeric',
+
             ]);
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+            if (isset($params_array['ciudad'])){ 
+                $ciudad = new Cities();   
+              $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
+          }
+  
 
             if($validate->fails()){
 
@@ -133,8 +138,14 @@ class CircuitController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-                'ciudad' => 'required|string',
+                'ciudad' => 'required_without:id_ciudad|string',
+                'id_ciudad' => 'required_without:ciudad|numeric',
             ]);
+
+            if (isset($params_array['ciudad'])){ 
+                $ciudad = new Cities();   
+              $id_ciudad = $ciudad->ret_ID($params_array['ciudad']);
+          }
 
             if($validate->fails()){
                 //La validacion a fallado
