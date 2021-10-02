@@ -25,7 +25,7 @@ class AssignedToController extends Controller
         ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
         ->join('horarios','turnos.id_horario','=', 'horarios.id')
         ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-        ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' , 'asignadoa.capitan','horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
         ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
         ->where('ubicaciones.id', '=',  $params_array['id_ubicacion'])
         ->get();
@@ -35,7 +35,7 @@ class AssignedToController extends Controller
         ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
         ->join('horarios','turnos.id_horario','=', 'horarios.id')
         ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-        ->select(['asignadoa.id as id', 'asignadoa.id_turno' ,'horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' , 'asignadoa.capitan','horarios.hora_inicio','horarios.hora_fin', 'ubicaciones.nombre as ubicacion', 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
         ->where('ubicaciones.id_ciudad', '=',  $params_array['id_ciudad'])
         ->get();
 
@@ -89,6 +89,7 @@ class AssignedToController extends Controller
             }else{
 
                 $assignado = new Assigned();
+                $assignado->capitan = $params_array['capitan'];
                 $assignado->id_turno = $params_array['id_turno'];
                 $assignado->id_participante = $params_array['id_participante'];
                 $assignado->save();
@@ -135,7 +136,7 @@ class AssignedToController extends Controller
 
                 $assignado =  Assigned::firstOrNew (['id'=> $id]);
                 unset($params_array['id']);
-
+                $assignado->capitan = $params_array['capitan'];
                 $assignado->id_turno = $params_array['id_turno'];
                 $assignado->id_participante = $params_array['id_participante'];
                 $assignado->save();
@@ -185,7 +186,7 @@ class AssignedToController extends Controller
 
       $assignados = DB::table('asignadoa') 
         ->join('participantes','asignadoa.id_participante','=', 'participantes.id')
-        ->select(['asignadoa.id as id', 'asignadoa.id_turno' , 'asignadoa.id_participante', 'participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
+        ->select(['asignadoa.id as id', 'asignadoa.id_turno' , 'asignadoa.id_participante', 'asignadoa.capitan','participantes.n', 'participantes.ap','participantes.am','participantes.ac','participantes.id_circuito'])
         ->where('asignadoa.id_turno', '=',  $id_turno)
         ->get();
    
