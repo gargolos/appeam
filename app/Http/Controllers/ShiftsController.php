@@ -195,7 +195,7 @@ class ShiftsController extends Controller
             $turno = Shifts::find($id);
             if(is_object($turno)){
                 //$turno->delete();
-
+                Shifts::destroy($id);
                 $data =[
                     'code' => 200,
                     'status' => 'success',
