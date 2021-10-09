@@ -9,6 +9,7 @@ use  Illuminate\Support\Facades\Validator;
 use App\Cities;
 use App\Shifts;
 use App\Reports;
+use App\Assigned;
 
 class ShiftsController extends Controller
 {
@@ -183,14 +184,19 @@ class ShiftsController extends Controller
 
     public function destroy($id){
         $informe = Reports::where('id_turno', '=', $id)->first();
+        $asignadoa = Assigned::where('id_turno', '=', $id)->first();
 
-        if(!empty($informe)){
+
+        if(!empty($informe)||!empty($asignadoa)){
             $data =[
                 'code' => 404,
                 'status' => 'error',
                 'informes' => $informe,
-                'mensaje' => 'No se puede eliminar el turno por que ya tiene informes asignados'
+                'informes' => $asignadoa,
+                'mensaje' => 'No se puede eliminar el turno por que ya tiene informes o participantes asignados'
             ];
+        
+
         }else{
             $turno = Shifts::find($id);
             if(is_object($turno)){
