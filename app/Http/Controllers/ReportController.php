@@ -78,6 +78,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
+                'biblias'	=> 'numeric',
               //  'observaciones' => 'alpha_num'
             ]);
   
@@ -106,6 +107,7 @@ class ReportController extends Controller
                 $informe->cursos = $params_array['cursos'];
                 $informe->tratados = $params_array['tratados'];
                 $informe->tarjetas = $params_array['tarjetas'];
+                $informe->biblias = $params_array['biblias'];                
                 $informe->observaciones = $params_array['observaciones'];    
 
                 $informe->save();
@@ -148,6 +150,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
+                'biblias'	=> 'numeric',
               //  'observaciones' => 'alpha_num'
             ]);
 
@@ -179,6 +182,7 @@ class ReportController extends Controller
                 $informe->cursos = $params_array['cursos'];
                 $informe->tratados = $params_array['tratados'];
                 $informe->tarjetas = $params_array['tarjetas'];
+                $informe->biblias = $params_array['biblias']; 
                 $informe->observaciones = $params_array['observaciones'];    
                 $informe->save();
                
