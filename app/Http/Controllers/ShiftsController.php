@@ -181,33 +181,23 @@ class ShiftsController extends Controller
 
     }
 
-    public function destroy($id, Exception $e){
-        if ($e instanceof CustomException) {
-            //
-        
+    public function destroy($id){
         $turno = Shifts::find($id);
-        if(!empty($turno)){
-        
+        if(is_object($turno)){
             $turno->delete();
-               
             $data =[
                 'code' => 200,
                 'status' => 'success',
                 'turno' => $turno
             ];
-  
-
         }else{
             $data =[
-                'code' => 400,
+                'code' => 404,
                 'status' => 'error',
-                'message' => 'El turno no existe.'
+                'message' => 'El turno no se ha localizado'
             ];
         }
         return response()->json($data, $data['code']);
-    }
-     
-    return parent::report($e);
     }
 
     public function getShiftsOfCity($idciudad, Request $request){
