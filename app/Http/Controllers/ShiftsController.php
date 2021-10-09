@@ -182,11 +182,11 @@ class ShiftsController extends Controller
     }
 
     public function destroy($id){
-        $informe = Reports::where('id_turno', '=', $id)->get();
+        $informe = Reports::where('id_turno', '=', $id)->first();
 
         if(!empty($informe)){
             $data =[
-                'code' => 400,
+                'code' => 404,
                 'status' => 'error',
                 'informes' => $informe,
                 'mensaje' => 'No se puede eliminar el turno por que ya tiene informes asignados'
