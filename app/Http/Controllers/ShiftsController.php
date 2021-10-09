@@ -182,7 +182,8 @@ class ShiftsController extends Controller
     }
 
     public function destroy($id){
-        $informe = Reports::find($id);
+        $informe = Reports::where('id_turno', '=', $id)->get();
+                
         if(is_object($informe)){
             $data =[
                 'code' => 400,
