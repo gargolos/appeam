@@ -207,9 +207,8 @@ class ShiftsController extends Controller
                     'message' => 'El turno no se ha localizado'
                 ];
             }
-            return response()->json($data, $data['code']);
         }
-
+        return response()->json($data, $data['code']);
     }
 
     public function getShiftsOfCity($idciudad, Request $request){
