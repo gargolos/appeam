@@ -139,7 +139,8 @@ class ReportController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'fecha'	    => 'date',
-                'semana'    => 'required|numeric|unique:informes,semana,' . $id . ',id,id_turno,' . $id_turno,
+               // 'semana'    => 'required|numeric|unique:informes,semana,' . $id . ',id,id_turno,' . $id_turno,
+                'semana'    => 'required|numeric',
                 'id_user'	=> 'required|numeric',
                 'actividad'	=> 'boolean',
                 'libros'	=> 'numeric',
