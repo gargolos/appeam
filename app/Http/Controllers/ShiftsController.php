@@ -192,7 +192,7 @@ class ShiftsController extends Controller
                 'code' => 404,
                 'status' => 'error',
                 'informes' => $informe,
-                'informes' => $asignadoa,
+                'asignadoa' => $asignadoa,
                 'mensaje' => 'No se puede eliminar el turno por que ya tiene informes o participantes asignados'
             ];
         
