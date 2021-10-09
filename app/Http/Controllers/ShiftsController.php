@@ -188,7 +188,6 @@ class ShiftsController extends Controller
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'informe' => $informe,
                 'mensaje' => 'No se puede eliminar el turno por que ya tiene informes asignados'
             ];
         }else{
