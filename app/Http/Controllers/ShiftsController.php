@@ -184,7 +184,7 @@ class ShiftsController extends Controller
     public function destroy($id, Request $request){
         $turno = Shifts::find($id);
         if(!empty($turno)){
-            $turno->delete();
+           // $turno->delete();
                
             $data =[
                 'code' => 200,
