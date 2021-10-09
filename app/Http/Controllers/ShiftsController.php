@@ -8,7 +8,7 @@ use  Illuminate\Support\Facades\Validator;
 
 use App\Cities;
 use App\Shifts;
-
+use App\Reports;
 
 class ShiftsController extends Controller
 {
@@ -182,22 +182,32 @@ class ShiftsController extends Controller
     }
 
     public function destroy($id){
-        $turno = Shifts::find($id);
-        if(is_object($turno)){
-            $turno->delete();
+        $informe = Reports::find($id);
+        if(is_object($informe)){
             $data =[
-                'code' => 200,
-                'status' => 'success',
-                'turno' => $turno
+                'code' => 400,
+                'status' => 'error',
+                'turno' => 'No se puede eliminar el turno por que ya tiene informes asignados'
             ];
         }else{
-            $data =[
-                'code' => 404,
-                'status' => 'error',
-                'message' => 'El turno no se ha localizado'
-            ];
+            $turno = Shifts::find($id);
+            if(is_object($turno)){
+                $turno->delete();
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'turno' => $turno
+                ];
+            }else{
+                $data =[
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => 'El turno no se ha localizado'
+                ];
+            }
+            return response()->json($data, $data['code']);
         }
-        return response()->json($data, $data['code']);
+
     }
 
     public function getShiftsOfCity($idciudad, Request $request){

@@ -39,6 +39,7 @@ class ReportController extends Controller
     }
 
     public function show($id){
+        
         $informe = Reports::find($id);
         if(is_object($informe)){
             $data =[
