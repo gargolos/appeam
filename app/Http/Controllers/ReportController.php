@@ -78,7 +78,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'biblias'	=> 'numeric',
+                'biblias'	=> 'numeric'
               //  'observaciones' => 'alpha_num'
             ]);
   
@@ -150,7 +150,7 @@ class ReportController extends Controller
                 'cursos'	=> 'numeric',
                 'tratados'	=> 'numeric',
                 'tarjetas'	=> 'numeric',
-                'biblias'	=> 'numeric',
+                'biblias'	=> 'numeric'
               //  'observaciones' => 'alpha_num'
             ]);
 
