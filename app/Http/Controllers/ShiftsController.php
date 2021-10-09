@@ -184,7 +184,7 @@ class ShiftsController extends Controller
     public function destroy($id){
         $informe = Reports::where('id_turno', '=', $id)->get();
 
-        if(is_object($informe)){
+        if(!empty($informe)){
             $data =[
                 'code' => 400,
                 'status' => 'error',
