@@ -87,7 +87,7 @@ class ReportController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El informe no se ha creado',
+                    'message' => 'El informe no se ha creado store',
                     'errors' => $validate->errors()
                 );
             }else{
@@ -134,7 +134,7 @@ class ReportController extends Controller
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 
-        $id_turno =  $params_array['id_turno'];
+       // $id_turno =  $params_array['id_turno'];
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
@@ -161,7 +161,7 @@ class ReportController extends Controller
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'El informe no se ha creado',
+                    'message' => 'El informe no se ha actualizado',
                     'errors' => $validate->errors()
                 );            
             }else{
