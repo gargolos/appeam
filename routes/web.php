@@ -26,10 +26,7 @@ Route::get('/api/candidates', 'ParticipantController@candidates');
 Route::resource('/api/city', 'CityController');
 Route::resource('/api/report', 'ReportController');
 
-Route::get('/api/informe1', 'rptInformesController@index');
-Route::post('/api/informes', 'rptInformesController@rptInformes');
-Route::post('/api/informe', 'rptInformesController@rptInforme');
-Route::post('/api/informexubi', 'rptInformesController@rptReportLocation');
+
 
 Route::resource('/api/circuit', 'CircuitController');
 Route::get('/api/circuitofc/{id}', 'CircuitController@getCircuitsOfCity');
@@ -63,3 +60,12 @@ Route::resource('/api/experience', 'ExperienceController');
 Route::resource('/api/absence', 'AbsenceController');
 Route::get('/api/absence/{id_turno}/{sem}', 'AbsenceController@id_informe');
 Route::get('/api/absence_pinf/{id_informe}', 'AbsenceController@abs_id_informe');
+
+
+Route::get('/api/informe1', 'rptInformesController@index');
+Route::post('/api/informes', 'rptInformesController@rptInformes');
+Route::post('/api/informe', 'rptInformesController@rptInforme');
+Route::post('/api/informexubi', 'rptInformesController@rptReportLocation');
+
+Route::get('/api/reporte1', 'rptInformesController@rptReporte1');
+Route::get('/api/reporte2', 'rptInformesController@rptReporte2');
