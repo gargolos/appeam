@@ -149,8 +149,11 @@ class rptInformesController extends Controller
 
                      $informe = DB::table('participantes')
                      ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
+                     ->join('turnos','turnos.id','=', 'asignadoa.id_turno')
+                     ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                     ->join('horarios','horarios.id','=','turnos.id_horario')
                      ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre'  ])                        
                      ->get();
                 }else{
 
