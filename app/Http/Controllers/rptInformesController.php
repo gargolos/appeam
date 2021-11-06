@@ -153,7 +153,7 @@ class rptInformesController extends Controller
                      ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
                      ->join('horarios','horarios.id','=','turnos.id_horario')
                      ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre'  ])                        
+                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre as ubicacion'  ])                        
                      ->get();
                 }else{
 
