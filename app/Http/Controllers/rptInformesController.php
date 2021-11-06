@@ -123,7 +123,7 @@ class rptInformesController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'asignados'	=> 'required|numeric',
-                'id_cidudad' => 'required|numeric'
+                'id_ciudad' => 'required|numeric'
             ]);
             if($validate->fails()){
                 //La validacion a fallado
@@ -142,7 +142,7 @@ class rptInformesController extends Controller
                     ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
-                    ->distrinct()
+                    ->distinct()
                     ->get();
                 }else{
                     //No asignados
