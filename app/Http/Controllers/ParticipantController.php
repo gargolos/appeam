@@ -82,12 +82,13 @@ class ParticipantController extends Controller
     public function store(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'n' => 'required|alpha_num',
-                'ap' => 'required|alpha_num',
-                'am' => 'alpha_num',
-                'ac' => 'alpha_num',
+                'n' => 'required|string',
+                'ap' => 'required|string',
+                'am' => 'string',
+                'ac' => 'string',
                 'e' => 'email',
                 't' => 'string|max:15',
                 'c' => 'string|max:15',
@@ -112,12 +113,13 @@ class ParticipantController extends Controller
                 'ppeamId' => 'numeric'
             ]);
             
-
+      
                            
             $id_ciudad = $params_array['id_ciudad']; //buscar el id
   
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
+
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -199,10 +201,10 @@ class ParticipantController extends Controller
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
-                'n' => 'required|alpha_num',
-                'ap' => 'required|alpha_num',
-                'am' => 'alpha_num',
-                'ac' => 'alpha_num',
+                'n' => 'required|string',
+                'ap' => 'required|string',
+                'am' => 'string',
+                'ac' => 'string',
                 'e' => 'email',
                 't' => 'string|max:15',
                 'c' => 'string|max:15',
@@ -228,6 +230,7 @@ class ParticipantController extends Controller
             ]);
             //$ciudad = new Cities();                
             //$id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+
 
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $params_array['id_ciudad']); //buscar el id

@@ -144,7 +144,16 @@ class rptInformesController extends Controller
                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
                     ->distinct()
                     ->get();
+                }elseif ($params_array['asignados']==2) {
+                     //asignados por turno
+
+                     $informe = DB::table('participantes')
+                     ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
+                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                     ->get();
                 }else{
+
                     //No asignados
                     //Select DISTINCT participantes.* from participantes left Join asignadoa ON participantes.id = asignadoa.id_participante where asignadoa.id_participante is NULL
                     $informe = DB::table('participantes')
