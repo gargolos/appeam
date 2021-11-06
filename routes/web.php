@@ -69,3 +69,4 @@ Route::post('/api/informexubi', 'rptInformesController@rptReportLocation');
 
 Route::get('/api/reporte1', 'rptInformesController@rptReporte1');
 Route::get('/api/reporte2', 'rptInformesController@rptReporte2');
+Route::get('/api/reporte4', 'rptInformesController@rptReporte4');

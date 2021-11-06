@@ -31,7 +31,7 @@ class rptInformesController extends Controller
         
     }
 
-    public function rptReporte1(){
+    public function rptReporte1(Request $request){
         // Participantes Totales
 /*             
                         $sql=             
@@ -56,34 +56,63 @@ class rptInformesController extends Controller
             SELECT "sc", count(id) FROM `participantes` WHERE asignacion = '100000'';
                   $informe = DB::select($sql);
 */
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'id_ciudad' => 'required|numeric'
+    ]);
 
-$informe['total'] = DB::table('participantes')->count();
-$informe['thombres'] = DB::table('participantes')->where('sexo', '=', 'M')->count();
-$informe['tmujeres'] = DB::table('participantes')->where('sexo', '=', 'F')->count();
-$informe['tpublicador'] = DB::table('participantes')->where('asignacion', '=', '0')->count();
-$informe['tprecursores'] = DB::table('participantes')->where('asignacion', '=', '1')->count();
-$informe['tespecial'] = DB::table('participantes')->where('asignacion', '=', '10')->count();
-$informe['tmisionero'] = DB::table('participantes')->where('asignacion', '=', '100')->count();
-$informe['tsm'] = DB::table('participantes')->where('asignacion', '=', '1000')->count();
-$informe['tanciano'] = DB::table('participantes')->where('asignacion', '=', '10000')->count();
-$informe['tsc'] = DB::table('participantes')->where('asignacion', '=', '100000')->count();
-json_encode($informe);
-            if (empty($informe)){
-        $data =[
-            'code' => 400,
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
             'status' => 'error',
-            'message' => 'El informe no tiene datos'
-        ];
-    }else{
-        $data =[
-            'code' => 200,
-            'status' => 'success',
-            'informe' => $informe
-        ];
-    }
-    return response()->json($data, $data['code']);
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $id_ciudad=$params_array['id_ciudad'];
+            $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+        $informe['thombres'] = DB::table('participantes')->where('sexo', '=', 'M')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tmujeres'] = DB::table('participantes')->where('sexo', '=', 'F')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tpublicador'] = DB::table('participantes')->where('asignacion', '=', '0')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tprecursores'] = DB::table('participantes')->where('asignacion', '=', '1')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tespecial'] = DB::table('participantes')->where('asignacion', '=', '10')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tmisionero'] = DB::table('participantes')->where('asignacion', '=', '100')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tsm'] = DB::table('participantes')->where('asignacion', '=', '1000')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tanciano'] = DB::table('participantes')->where('asignacion', '=', '10000')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['tsc'] = DB::table('participantes')->where('asignacion', '=', '100000')->where('id_ciudad', '=', $id_ciudad)->count();
+        
+            json_encode($informe);
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
 
     }
+
+   
 
     public function rptReporte2(Request $request){
         // Participantes 
@@ -94,7 +123,7 @@ json_encode($informe);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'asignados'	=> 'required|numeric',
-                'id_cidudad' => 'numeric'
+                'id_cidudad' => 'required|numeric'
             ]);
             if($validate->fails()){
                 //La validacion a fallado
@@ -112,7 +141,8 @@ json_encode($informe);
                     $informe = DB::table('participantes')
                     ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                    ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                    ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                    ->distrinct()
                     ->get();
                 }else{
                     //No asignados
@@ -120,7 +150,7 @@ json_encode($informe);
                     $informe = DB::table('participantes')
                     ->leftJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                    ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                    ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
                     ->whereRaw('asignadoa.id_participante is NULL')
                     ->get();
                 }
@@ -144,6 +174,227 @@ json_encode($informe);
         return response()->json($data, $data['code']);
     }
 
+    public function rptReporte4(Request $request){
+        // Ausencias //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'ubicacion' => 'required|string',
+        'año' => 'numeric',
+        'mes' => 'numeric',
+        'semana' => 'numeric',
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $semana=$params_array['semana'];            
+            $location = new Locations();                
+            $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+
+//            var_dump($ubicacion);
+  //          var_dump($fecha2); die();
+            if(empty($semana)){
+                //Mes
+                $año=$params_array['año'];
+                $mes=$params_array['mes'];
+    
+                $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
+                $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes
+                $informe = DB::table('ausencias')
+                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
+                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
+                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                ->whereBetween('informes.fecha', [$fecha1, $fecha2])
+                ->get();
+  
+            }else{
+                //semana
+                $informe = DB::table('ausencias')
+                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
+                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
+                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                ->where('informes.semana', '=', $semana)
+                ->get();
+
+            }
+
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
+
+    public function rptReporte5(Request $request){
+        // Ausencias //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'ubicacion' => 'required|string',
+        'año' => 'numeric',
+        'mes' => 'numeric',
+        'semana' => 'numeric',
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $semana=$params_array['semana'];            
+            $location = new Locations();                
+            $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+
+//            var_dump($ubicacion);
+  //          var_dump($fecha2); die();
+            if(empty($semana)){
+                //Mes
+                $año=$params_array['año'];
+                $mes=$params_array['mes'];
+    
+                $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
+                $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes
+                $informe = DB::table('ausencias')
+                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
+                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
+                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                ->whereBetween('informes.fecha', [$fecha1, $fecha2])
+                ->get();
+  
+            }else{
+                //semana
+                $informe = DB::table('ausencias')
+                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
+                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
+                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                ->where('informes.semana', '=', $semana)
+                ->get();
+
+            }
+
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
+
+
+    public function rptReporteX(Request $request){
+        // reporteX
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $id_ciudad=$params_array['id_ciudad'];
+            $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+             
+            json_encode($informe);
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
 
     public function rptInformes(Request $request){
 //json {"id_turno":"1", "semana":"mmYY","mes":"mm","año":"YY"}

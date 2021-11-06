@@ -164,7 +164,7 @@ class ParticipantController extends Controller
                 $participante->foto = $this->validaDefault($params_array['foto'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
-                //$participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
+                $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
                
                 $mydate=$params_array['nacimiento'];
