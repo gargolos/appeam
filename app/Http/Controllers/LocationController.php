@@ -61,12 +61,12 @@ class LocationController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'nombre' => 'required|string',
-                'ciudad' => 'required|string',
+                'id_ciudad' => 'required|numeric',
             ]);
   
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+           // $ciudad = new Cities();                
+           // $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -76,16 +76,19 @@ class LocationController extends Controller
                     'message' => 'La ubicacion no se ha creado',
                     'errors' => $validate->errors()
                 );
-            }elseif( $id_ciudad==0 ) {
+            }
+/*            elseif( $id_ciudad==0 ) {
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
                     'message' => 'La ubicacion no se ha creado, la ciudad no existe en la base de datos.',
                 );
-            }else{
+            }*/
+            else{
 
                 $ubicacion = new Locations();
-                $ubicacion->id_ciudad = $id_ciudad ; //buscar el id
+               
+                $ubicacion->id_ciudad = $params_array['id_ciudad']; 
                 $ubicacion->nombre = $params_array['nombre'];
                 $ubicacion->save();
                 

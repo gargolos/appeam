@@ -69,12 +69,12 @@ class ScheduleController extends Controller
             $validate = Validator::make($params_array, [
                 'hora_inicio' => 'required|numeric',
                 'hora_fin' => 'required|numeric',
-                'ciudad' => 'required|alpha',
+                'id_ciudad' => 'required|numeric',
             ]);
   
 
-            $ciudad = new Cities();                
-            $id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
+            //$ciudad = new Cities();                
+            //$id_ciudad = $ciudad->ret_ID($params_array['ciudad']); //buscar el id
 
             if($validate->fails()){
                 //La validacion a fallado
@@ -84,16 +84,18 @@ class ScheduleController extends Controller
                     'message' => 'El horario no se ha creado',
                     'errors' => $validate->errors()
                 );
-            }elseif( $id_ciudad==0 ) {
+            }
+/*            elseif( $id_ciudad==0 ) {
                 $data = array(
                     'status' => 'error',
                     'code' => 400,
                     'message' => 'El horario no se ha creado, la ciudad no existe en la base de datos.',
                 );
-            }else{
+            }*/
+            else{
 
                 $horario = new Schedules();
-                $horario->id_ciudad = $id_ciudad ; //buscar el id
+                $horario->id_ciudad = $params_array['id_ciudad']; //buscar el id
                 $horario->hora_inicio = $params_array['hora_inicio'];
                 $horario->hora_fin = $params_array['hora_fin'];
                 $horario->save();

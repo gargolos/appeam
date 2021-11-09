@@ -75,7 +75,7 @@ class rptInformesController extends Controller
         }else{
             $id_ciudad=$params_array['id_ciudad'];
             $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
-        $informe['thombres'] = DB::table('participantes')->where('sexo', '=', 'M')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['thombres'] = DB::table('participantes')->where('sexo', '=', 'M')->where('id_ciudad', '=', $id_ciudad)->count();
             $informe['tmujeres'] = DB::table('participantes')->where('sexo', '=', 'F')->where('id_ciudad', '=', $id_ciudad)->count();
             $informe['tpublicador'] = DB::table('participantes')->where('asignacion', '=', '0')->where('id_ciudad', '=', $id_ciudad)->count();
             $informe['tprecursores'] = DB::table('participantes')->where('asignacion', '=', '1')->where('id_ciudad', '=', $id_ciudad)->count();
@@ -215,23 +215,38 @@ class rptInformesController extends Controller
 
 //            var_dump($ubicacion);
   //          var_dump($fecha2); die();
+  /*
+$query = DB::table('users')->select('name');
+$users = $query->addSelect('age')->get();
+*/
+            $año=$params_array['año'];
+            $mes=$params_array['mes'];
             if(empty($semana)){
                 //Mes
-                $año=$params_array['año'];
-                $mes=$params_array['mes'];
+                if(empty($mes)){
+                    //año de servicio
+                    $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, 9, 1, $año)); //priemero del mes
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, -1, $año+1)); //ultimo de mes    
+                }else{
+                    
+                    $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
+                }
     
-                $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
-                $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes
                 $informe = DB::table('ausencias')
                 ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
                 ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
-                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->Rightjoin('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                 ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
-                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                ->join('horarios','horarios.id','=','turnos.id_horario')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre as ubicacion', DB::raw('count(*) as ausencias') ])                        
                 ->where('turnos.id_ubicacion','=',$id_ubicacion)
                 ->whereBetween('informes.fecha', [$fecha1, $fecha2])
+                ->groupBy('participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre')
                 ->get();
-  
+
+
             }else{
                 //semana
                 $informe = DB::table('ausencias')
@@ -239,9 +254,12 @@ class rptInformesController extends Controller
                 ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
                 ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                 ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
-                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                ->join('horarios','horarios.id','=','turnos.id_horario')
+                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre as ubicacion', DB::raw('count(*) as ausencias') ])                        
                 ->where('turnos.id_ubicacion','=',$id_ubicacion)
                 ->where('informes.semana', '=', $semana)
+                ->groupBy('participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre')
                 ->get();
 
             }
@@ -272,8 +290,8 @@ class rptInformesController extends Controller
 
     }
 
-    public function rptReporte5(Request $request){
-        // Ausencias //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
+    public function rptReporte7(Request $request){
+        // Informes //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
     $json = $request->input('json', null);
     $params_array = json_decode($json, true);
     if(!empty($params_array)){
@@ -301,31 +319,40 @@ class rptInformesController extends Controller
 
 //            var_dump($ubicacion);
   //          var_dump($fecha2); die();
+  /*
+$query = DB::table('users')->select('name');
+$users = $query->addSelect('age')->get();
+*/
+            $año=$params_array['año'];
+            $mes=$params_array['mes'];
             if(empty($semana)){
                 //Mes
-                $año=$params_array['año'];
-                $mes=$params_array['mes'];
-    
-                $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
-                $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes
-                $informe = DB::table('ausencias')
-                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
-                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
-                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
-                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                if(empty($mes)){
+                    //año de servicio
+                    $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, 9, 1, $año-1)); //priemero del mes
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, -1, $año)); //ultimo de mes    
+                }else{
+                    
+                    $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
+                }
+               // $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+               //var_dump($fecha1); var_dump($fecha2);die();
+               $informe = DB::table('informes')
+                ->Rightjoin('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                ->select(DB::raw('sum(actividad) as actividad, sum(libros) as libros, sum(revistas) as revistas, sum(folletos) as folletos, sum(videos) as videos, sum(revisitas) as revisitas, sum(cursos) as cursos, sum(tratados) as tratados, sum(tarjetas) as tarjetas, sum(biblias) as biblias')  )
                 ->where('turnos.id_ubicacion','=',$id_ubicacion)
                 ->whereBetween('informes.fecha', [$fecha1, $fecha2])
                 ->get();
-  
+                // var_dump($id_ubicacion);die();
+
             }else{
                 //semana
-                $informe = DB::table('ausencias')
-                ->join('informes', 'informes.id', '=' , 'ausencias.id_informe')
-                ->join('participantes',  'participantes.id', '=', 'ausencias.id_participante')
-                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
-                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
-                ->select(['participantes.id', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito',  ])                        
+                $informe = DB::table('informes')
+                ->Rightjoin('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                ->select(DB::raw('sum(actividad) as actividad, sum(libros) as libros, sum(revistas) as revistas, sum(folletos) as folletos, sum(videos) as videos, sum(revisitas) as revisitas, sum(cursos) as cursos, sum(tratados) as tratados, sum(tarjetas) as tarjetas, sum(biblias) as biblias')  )
                 ->where('turnos.id_ubicacion','=',$id_ubicacion)
                 ->where('informes.semana', '=', $semana)
                 ->get();
