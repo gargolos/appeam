@@ -123,7 +123,8 @@ class rptInformesController extends Controller
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'asignados'	=> 'required|numeric',
-                'id_ciudad' => 'required|numeric'
+                'id_ciudad' => 'required|numeric',
+                'ubicacion' => 'string'
             ]);
             if($validate->fails()){
                 //La validacion a fallado
@@ -135,6 +136,8 @@ class rptInformesController extends Controller
                 );
             }else{
 
+
+                 
                 if($params_array['asignados']==1){
                     //asignados
                     //Select DISTINCT participantes.* from participantes RIGHT Join asignadoa ON participantes.id = asignadoa.id_participante
@@ -146,7 +149,22 @@ class rptInformesController extends Controller
                     ->get();
                 }elseif ($params_array['asignados']==2) {
                      //asignados por turno
-
+                    if(!empty($params_array['ubicacion'])){
+                        //con ubicacion
+                        $location = new Locations();                
+                        $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+                        //var_dump($id_ubicacion); die();
+                        $informe = DB::table('participantes')
+                        ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
+                        ->leftJoin('turnos','turnos.id','=', 'asignadoa.id_turno')
+                        ->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+                        ->join('horarios','horarios.id','=','turnos.id_horario')
+                        ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                        ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin'  ])                        
+                        ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                        ->get();
+                    }else{
+                        //sin ubicacion
                      $informe = DB::table('participantes')
                      ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
                      ->join('turnos','turnos.id','=', 'asignadoa.id_turno')
@@ -155,6 +173,8 @@ class rptInformesController extends Controller
                      ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                      ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre as ubicacion'  ])                        
                      ->get();
+                    }
+
                 }else{
 
                     //No asignados
