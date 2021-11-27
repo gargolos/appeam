@@ -426,9 +426,10 @@ $users = $query->addSelect('age')->get();
         }else{
             $id_ciudad=$params_array['id_ciudad'];
             $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
-            $informe['teorica'] = DB::table('participantes')->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
-            ->where('id_ciudad', '=', $id_ciudad)->count();
-            $informe['practica'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count(); 
+            $informe['teorica'] = DB::table('capacitaciones')->join('eventos','eventos.id','=','capacitaciones.id_evento')
+            ->where('id_ciudad', '=', $id_ciudad)->where('eventos.tipo', '=', 0)->count();
+            $informe['practica'] = DB::table('capacitaciones')->join('eventos','eventos.id','=','capacitaciones.id_evento')
+            ->where('id_ciudad', '=', $id_ciudad)->where('eventos.tipo', '=', 1)->count();
             json_encode($informe);
             if (empty($informe)){
                     $data =[
@@ -462,7 +463,8 @@ $users = $query->addSelect('age')->get();
     $params_array = json_decode($json, true);
     if(!empty($params_array)){
     $validate = Validator::make($params_array, [
-        'id_ciudad' => 'required|numeric'
+        'id_ciudad' => 'required|numeric',
+        'tipo' => 'numeric',
     ]);
 
          if($validate->fails()){
@@ -476,9 +478,17 @@ $users = $query->addSelect('age')->get();
         
         }else{
             $id_ciudad=$params_array['id_ciudad'];
-            $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+            $tipo=$params_array['tipo'];
+            $informe = DB::table('participantes')
+            ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+            ->join('capacitaciones','capacitaciones.id_participante','=','participantes.id')
+            ->join('eventos','eventos.id','=','capacitaciones.id_evento')
+            ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro'  ])                        
+            ->where('participantes.id_ciudad', '=', $id_ciudad)
+            ->where('eventos.tipo', '=', $tipo)
+            ->get();
              
-            json_encode($informe);
+
             if (empty($informe)){
                     $data =[
                         'code' => 400,
