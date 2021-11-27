@@ -71,3 +71,5 @@ Route::get('/api/reporte1', 'rptInformesController@rptReporte1');
 Route::get('/api/reporte2', 'rptInformesController@rptReporte2');
 Route::get('/api/reporte4', 'rptInformesController@rptReporte4');
 Route::get('/api/reporte7', 'rptInformesController@rptReporte7');
+Route::get('/api/reporte9', 'rptInformesController@rptReporte9');
+Route::get('/api/reporte10', 'rptInformesController@rptReporte10');

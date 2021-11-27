@@ -405,6 +405,105 @@ $users = $query->addSelect('age')->get();
 
     }
 
+    public function rptReporte9(Request $request){
+        // reporteX
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $id_ciudad=$params_array['id_ciudad'];
+            $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['teorica'] = DB::table('participantes')->join('ubicaciones','ubicaciones.id','=','turnos.id_ubicacion')
+            ->where('id_ciudad', '=', $id_ciudad)->count();
+            $informe['practica'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count(); 
+            json_encode($informe);
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
+
+    public function rptReporte10(Request $request){
+        // reporteX
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+            $id_ciudad=$params_array['id_ciudad'];
+            $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+             
+            json_encode($informe);
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
 
     public function rptReporteX(Request $request){
         // reporteX

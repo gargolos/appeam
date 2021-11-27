@@ -85,6 +85,7 @@ class EventController extends Controller
                 $evento = new Events();
                 $evento->descripcion = $params_array['descripcion'];
                 $evento->fecha = $params_array['fecha'];
+                $evento->tipo = $params_array['tipo'];  //0 teorico, 1 practico o en campo
                 $evento->id_ciudad = $params_array['id_ciudad'];
                 $evento->save();
                 
@@ -134,6 +135,7 @@ class EventController extends Controller
 
                 $evento->descripcion = $params_array['descripcion'];
                 $evento->fecha = $params_array['fecha'];
+                $evento->tipo = $params_array['tipo'];  //0 teorico, 1 practico o en campo
                 $evento->id_ciudad = $params_array['id_ciudad'];
 
                 $evento->save();
