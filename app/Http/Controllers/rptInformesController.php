@@ -483,7 +483,7 @@ $users = $query->addSelect('age')->get();
             ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
             ->join('capacitaciones','capacitaciones.id_participante','=','participantes.id')
             ->join('eventos','eventos.id','=','capacitaciones.id_evento')
-            ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro'  ])                        
+            ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'eventos.fecha as fecha_evento'  ])                        
             ->where('participantes.id_ciudad', '=', $id_ciudad)
             ->where('eventos.tipo', '=', $tipo)
             ->get();
@@ -514,6 +514,55 @@ $users = $query->addSelect('age')->get();
             return response()->json($data, $data['code']);
 
     }
+
+   
+    public function rptReporte12(Request $request){
+        //json {"id_turno":"1", "fecha":"yyyy-mm-dd"}
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'ubicacion'	=> 'required|string',
+                'fecha'    => 'date',	
+            ]);
+        
+        
+            if($validate->fails()){
+                //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Los datos enviados contienen errores',
+                    'errors' => $validate->errors()
+                );
+            }else{
+
+                $informe = Reports::select(['fecha','semana', 'id_turno',  'libros', 'revistas','folletos','videos','revisitas','cursos','tratados','tarjetas','observaciones', ])
+                ->where('fecha','=',$params_array['fecha'])
+                ->where('id_turno','=',$params_array['id_turno'])
+                ->where('actividad','=','1')
+                ->get();     
+                
+                                
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'participant' => $informe
+                ];
+
+            }
+    
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        }
+        return response()->json($data, $data['code']);
+    
+    }
+
 
     public function rptReporteX(Request $request){
         // reporteX
@@ -563,6 +612,7 @@ $users = $query->addSelect('age')->get();
             return response()->json($data, $data['code']);
 
     }
+
 
     public function rptInformes(Request $request){
 //json {"id_turno":"1", "semana":"mmYY","mes":"mm","año":"YY"}
