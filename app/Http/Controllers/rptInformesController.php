@@ -522,8 +522,8 @@ $users = $query->addSelect('age')->get();
         $params_array = json_decode($json, true);
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
+                'id_ciudad' => 'required|numeric',
                 'ubicacion'	=> 'required|string',
-                'fecha'    => 'date',	
             ]);
         
         
@@ -537,13 +537,70 @@ $users = $query->addSelect('age')->get();
                 );
             }else{
 
-                $informe = Reports::select(['fecha','semana', 'id_turno',  'libros', 'revistas','folletos','videos','revisitas','cursos','tratados','tarjetas','observaciones', ])
-                ->where('fecha','=',$params_array['fecha'])
-                ->where('id_turno','=',$params_array['id_turno'])
-                ->where('actividad','=','1')
-                ->get();     
-                
+                $location = new Locations();                
+                $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+
+                $informe = DB::table('participantes')
+                ->leftjoin('asignadoa', 'asignadoa.id_participante',  '=', 'participantes.id')
+                ->join('turnos', 'turnos.id', '=', 'asignadoa.id_turno')
+                ->join('horarios', 'horarios.id', '=', 'turnos.id_horario')
+                ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
+                ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito','turnos.dia', 'horarios.hora_inicio', 'horarios.hora_fin',  'asignadoa.capitan'  ])                        
+                ->where('turnos.id_ubicacion', '=', $id_ubicacion)
+                ->get();
                                 
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'participant' => $informe
+                ];
+
+            }
+    
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        }
+        return response()->json($data, $data['code']);
+    
+    }
+
+    public function rptReporte13(Request $request){
+        //json {"id_turno":"1", "fecha":"yyyy-mm-dd"}
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'id_ciudad' => 'required|numeric',
+                'ubicacion'	=> 'required|string',
+            ]);
+        
+        
+            if($validate->fails()){
+                //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Los datos enviados contienen errores',
+                    'errors' => $validate->errors()
+                );
+            }else{
+
+                $location = new Locations();                
+                $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+
+                $informe = DB::table('asignadoa')
+                ->join('turnos', 'turnos.id', '=', 'asignadoa.id_turno')
+                ->join('horarios', 'horarios.id', '=', 'turnos.id_horario')
+                ->select(['turnos.dia', 'horarios.hora_inicio', 'horarios.hora_fin',  'turnos.capacidad', DB::raw('count(*) as participantes')  ])                        
+                ->where('turnos.id_ubicacion', '=', $id_ubicacion)
+                ->groupBy('turnos.dia', 'horarios.hora_inicio', 'horarios.hora_fin', 'turnos.capacidad')
+                ->get();
+            
+
                 $data =[
                     'code' => 200,
                     'status' => 'success',
