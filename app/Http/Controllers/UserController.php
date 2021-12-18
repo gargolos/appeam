@@ -81,13 +81,14 @@ class UserController extends Controller
         
     }
 
+    
     public function accesoaComponentes($id_rol){
         $accesos = DB::table('componentes')
         ->join('accesos','accesos.ref_componente','=', 'componentes.ref')
         ->join('roles','accesos.ref_rol','=', 'roles.ref')
-        ->join('users','users.id_rol','=', 'roles.id')
+        //->join('users','users.id_rol','=', 'roles.id')
         ->select(['componentes.id as id','componentes.nombre as nombre','componentes.ref as ref', 'accesos.id as id_accesos' ])
-        ->where('users.id_rol', '=', $id_rol )
+        ->where('roles.id', '=', $id_rol )
         ->get();
     
   
