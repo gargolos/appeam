@@ -51,7 +51,7 @@ Route::resource('/api/access', 'AccessController');
 Route::get('/api/access/accesacomp/{id_rol}', 'AccessController@accesoaComponentes');
 
 Route::resource('/api/assigned', 'AssignedToController');
-//Route::get('/api/shift_assigned/{id_turno}', 'AssignedToController@shift_index');
+Route::get('/api/shift_assigned/{id_turno}', 'AssignedToController@shift_index');
 
 
 Route::resource('/api/event', 'EventController');
