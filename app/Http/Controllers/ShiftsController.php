@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use  Illuminate\Support\Facades\Validator;
 
+use App\User;
 use App\Cities;
 use App\Shifts;
 use App\Reports;
 use App\Assigned;
+use App\Roles;
 
 class ShiftsController extends Controller
 {
@@ -221,21 +223,90 @@ class ShiftsController extends Controller
     }
 
     public function getShiftsOfCity($idciudad, Request $request){
-        $turnos = Shifts::where('id_ciudad', '=', $idciudad)->get();
-        if(!empty($turnos)){        
-               $data =[
-                   'code' => 200,
-                   'status' => 'success',
-                   'turnos' => $turnos
-               ];
-           }else{
-               $data =[
-                   'code' => 400,
-                   'status' => 'error',
-                   'message' => 'La ciudad no existe.'
-               ];
-           }
-           return response()->json($data, $data['code']);
+        $turnos = DB::table('turnos') 
+        ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
+        ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+        ->join('horarios','turnos.id_horario','=', 'horarios.id')
+        ->select(['turnos.id',  'dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion',  'ciudades.nombre as ciudad' ])
+        ->where('turnos.id_ciudad', '=',  $idciudad)
+        ->get();
+ 
+         if(!empty($turnos)){        
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'turnos' => $turnos
+                ];
+            }else{
+                $data =[
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'La ciudad no existe.'
+                ];
+            }
+            return response()->json($data, $data['code']);
+ 
+     }
+
+    public function getShiftsforUsr($id_usuario, Request $request){
+       // $turnos = "1";
+        $usuario =  User::find($id_usuario);                
+        $rol= $usuario->ref_rol();
+        $id_ubicacion =$usuario->ubicacion();
+         
+       // $id_rol = $usuario['id_rol'];
+        //$id_participante = $usuario['id_participante'];
+        //var_dump($id_ubicacion); die();
+        if(!empty($usuario) && !($rol==0)){  
+            switch ($rol) {
+                case ($rol >= 60):  //turnos en la ciudad
+                    $turnos = DB::table('turnos') 
+                    ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
+                    ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+                    ->join('horarios','turnos.id_horario','=', 'horarios.id')
+                    ->select(['turnos.id','dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion',  'ciudades.nombre as ciudad' ])
+                    ->where('turnos.id_ciudad', '=',  $usuario['id_ciudad'])
+                    ->get();
+                break;
+                case ($rol >= 50): //tunros en la ubicacion
+                    $turnos = DB::table('turnos') 
+                    ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
+                    ->join('horarios','turnos.id_horario','=', 'horarios.id')
+                    ->leftjoin('asignadoa', 'turnos.id', '=', 'asignadoa.id_turno')
+                    ->leftjoin('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+                    ->select(['turnos.id','dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion',  'ciudades.nombre as ciudad' ])     
+                    ->where('turnos.id_ubicacion', '=',  $id_ubicacion)
+                    ->get();
+                break;
+                case ($rol >= 10): //1 turno en la ubicacion
+                    $turnos = DB::table('turnos') 
+                    ->join('ciudades','turnos.id_ciudad','=', 'ciudades.id')
+                    ->join('asignadoa', 'turnos.id', '=', 'asignadoa.id_turno')
+                    ->join('ubicaciones','turnos.id_ubicacion','=', 'ubicaciones.id')
+                    ->join('horarios','turnos.id_horario','=', 'horarios.id')
+                    ->select(['turnos.id','dia', 'capacidad','horarios.hora_inicio','horarios.hora_fin','ubicaciones.id as id_ubicacion', 'ubicaciones.nombre as ubicacion',  'ciudades.nombre as ciudad' ])
+                //  ->where('turnos.id_ciudad', '=',  $usuario['id_ciudad'])
+                    ->where('asignadoa.id_participante', '=',  $usuario['id_participante'])
+                    ->get();
+                break;
+            }
+
+
+         
+
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'turnos' => $turnos
+            ];
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El usuario no existe.'
+            ];
+        }
+        return response()->json($data, $data['code']);
 
     }
 

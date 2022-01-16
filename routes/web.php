@@ -39,6 +39,9 @@ Route::get('/api/scheduleofc/{id}', 'ScheduleController@getSchedulesOfCity');
 
 Route::resource('/api/shift', 'ShiftsController');
 Route::get('/api/shiftofc/{id}', 'ShiftsController@getShiftsOfCity');
+Route::get('/api/shiftofu/{id}', 'ShiftsController@getShiftsforUsr');
+
+
 
 Route::resource('/api/component', 'ComponentController');
 

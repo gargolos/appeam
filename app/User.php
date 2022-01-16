@@ -6,6 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 //use Illuminate\Foundation\Auth\User as Authenticatable;
 //use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+
+use App\Roles;
+use App\Assigned;
+use App\Locations;
+
 class User extends Model
 {
     
@@ -38,12 +43,29 @@ class User extends Model
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-    ];
-
- 
-    public function rol(){
-        return $this->belongsTo('App\Security', 'id_rol' );
+    ]; 
+    public  function ref_rol(){
+       $rol = Roles::find($this->id_rol);
+       
+        if(!empty($rol)){
+            return $rol['ref'];
+        }else{
+            return 0;
+        }
+       
     }
+
+    public function ubicacion(){
+        $id_asignado = Assigned::where('id_participante', $this->id_participante)->first();
+       // var_dump($id_asignado['id_turno']); die();
+         if(!empty($id_asignado)){
+            $id_ubicacion = Locations::find($id_asignado['id_turno']);
+            return $id_ubicacion['id'];
+        }else{
+            return 0;
+        }
+
+     }
 
 
 }
