@@ -117,9 +117,22 @@ class UserController extends Controller
  //       show();
     }
 
-    public function index(){
-        //entrega todo sin que revise a que ciudad pertence
-        $usuario = User::all();
+    public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      if (isset($params_array['id_ciudad'])){ 
+        $usuario = DB::table('users') 
+        ->select(['*'])
+        ->where('users.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+      }else{
+        $usuario = DB::table('users') 
+        ->select(['*'])
+        ->get();   
+      }
+  
+        //$usuario = User::all();
 
         return response()->json([
             'code' => 200,
