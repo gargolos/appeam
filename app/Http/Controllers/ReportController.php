@@ -17,7 +17,7 @@ use App\Cities;
 use App\Circuits;
 
 use App\Reports;
-
+use Illuminate\Support\Facades\DB;
 
 
 class ReportController extends Controller
@@ -26,9 +26,22 @@ class ReportController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function index(){
-        //entrega todo sin que revise a que ciudad pertence
-        $informes = Reports::all();
+    public function indexindex(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        if (isset($params_array['id_ciudad'])){ 
+            $informes = DB::table('informes') 
+              ->select(['*'])
+              ->where('informes.id_ciudad', '=',  $params_array['id_ciudad'])
+              ->get();
+            }else{
+              $informes = DB::table('informes') 
+              ->select(['*'])
+              ->get();   
+            }
+        
+       // $informes = Reports::all();
 
         return response()->json([
             'code' => 200,
