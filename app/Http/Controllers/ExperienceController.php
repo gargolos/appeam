@@ -12,9 +12,22 @@ use App\Experiences;
 
 class ExperienceController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+      if (isset($params_array['id_ciudad'])){ 
+        $experiencias = DB::table('experiencias') 
+        ->select(['*'])
+        ->where('experiencias.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->get();
+      }else{
+        $experiencias = DB::table('experiencias') 
+        ->select(['*'])
+        ->get();   
+      }
   
-        $experiencias = Experiences::all(); 
+      //  $experiencias = Experiences::all(); 
       
       return response()->json([
         'code' => 200,
