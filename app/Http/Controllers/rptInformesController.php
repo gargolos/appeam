@@ -145,6 +145,7 @@ class rptInformesController extends Controller
                     ->rightJoin('asignadoa', 'asignadoa.id_participante', '=', 'participantes.id')
                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
+                    ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
                     ->distinct()
                     ->get();
                 }elseif ($params_array['asignados']==2) {
@@ -172,6 +173,7 @@ class rptInformesController extends Controller
                      ->join('horarios','horarios.id','=','turnos.id_horario')
                      ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                      ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro', 'turnos.dia','horarios.hora_inicio', 'horarios.hora_fin', 'ubicaciones.nombre as ubicacion'  ])                        
+                     ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
                      ->get();
                     }
 
@@ -184,6 +186,7 @@ class rptInformesController extends Controller
                     ->join('circuitos', 'circuitos.id', '=', 'participantes.id_circuito')
                     ->select(['participantes.referencia', 'n', 'ap', 'am', 'ac', 'e', 't', 'c', 'congregacion', 'circuitos.nombre as circuito', 'fecha_registro',  'lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom' ])                        
                     ->whereRaw('asignadoa.id_participante is NULL')
+                    ->where('participantes.id_ciudad', '=',  $params_array['id_ciudad'])
                     ->get();
                 }
                                 
