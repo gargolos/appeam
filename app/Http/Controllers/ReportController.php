@@ -26,7 +26,7 @@ class ReportController extends Controller
         //$this->middleware('api.auth', ['except' =>['index', 'show']]);
     }
 
-    public function indexindex(Request $request){
+    public function index(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 
