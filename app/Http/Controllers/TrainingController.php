@@ -11,13 +11,24 @@ use App\Trainings;
 
 class TrainingController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        if (isset($params_array['id_ciudad'])){ 
+            $capacitaciones = DB::table('capacitaciones') 
+            ->leftjoin('eventos','capacitaciones.id_evento','=', 'eventos.id')
+            ->join('participantes','capacitaciones.id_participante','=', 'participantes.id') 
+            ->select(['capacitaciones.id as id', 'capacitaciones.fecha as fecha','participantes.n as participante_n', 'participantes.ap as participante_ap','participantes.am as participante_am', 'participantes.id as id_participante', 'eventos.descripcion as descripcion', 'eventos.id as id_evento', 'eventos.fecha as fecha_evento',])
+            ->where('eventos.id_ciudad', '=',  $params_array['id_ciudad'])
+            ->get();
+        }else{
         $capacitaciones = DB::table('capacitaciones') 
         ->join('eventos','capacitaciones.id_evento','=', 'eventos.id')
         ->join('participantes','capacitaciones.id_participante','=', 'participantes.id') 
         ->select(['capacitaciones.id as id', 'capacitaciones.fecha as fecha','participantes.n as participante_n', 'participantes.ap as participante_ap','participantes.am as participante_am', 'participantes.id as id_participante', 'eventos.descripcion as descripcion', 'eventos.id as id_evento', 'eventos.fecha as fecha_evento',])
         ->get();
- 
+        }
     //$capacitaciones = Trainings::all(); 
       
       return response()->json([
@@ -26,7 +37,27 @@ class TrainingController extends Controller
         'capacitaciones' => $capacitaciones
     ]);
 
-
+/**
+ (Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+    
+      //$assignado = Assigned::all();
+      if (isset($params_array['id_ciudad'])){ 
+ 
+      }else{
+        $circuitos = DB::table('circuitos') 
+        ->select(['*'])
+        ->get();   
+      }
+      return response()->json([
+        'code' => 200,
+        'status' => 'success',
+        'circuitos' => $circuitos
+    ]);
+    }
+ 
+ */
         return response()->json([
             'code' => 200,
             'status' => 'success',
