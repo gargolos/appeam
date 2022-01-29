@@ -30,34 +30,7 @@ class TrainingController extends Controller
         ->get();
         }
     //$capacitaciones = Trainings::all(); 
-      
-      return response()->json([
-        'code' => 200,
-        'status' => 'success',
-        'capacitaciones' => $capacitaciones
-    ]);
 
-/**
- (Request $request){
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
-    
-      //$assignado = Assigned::all();
-      if (isset($params_array['id_ciudad'])){ 
- 
-      }else{
-        $circuitos = DB::table('circuitos') 
-        ->select(['*'])
-        ->get();   
-      }
-      return response()->json([
-        'code' => 200,
-        'status' => 'success',
-        'circuitos' => $circuitos
-    ]);
-    }
- 
- */
         return response()->json([
             'code' => 200,
             'status' => 'success',
