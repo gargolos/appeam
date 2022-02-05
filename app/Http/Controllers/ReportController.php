@@ -33,7 +33,7 @@ class ReportController extends Controller
         if (isset($params_array['id_ciudad'])){ 
             $informes = DB::table('informes') 
               ->leftjoin('turnos', 'informes.id_turno', '=' , 'turnos.id')
-              ->select(['*'])
+              ->select(['informes.*'])
               ->where('turnos.id_ciudad', '=',  $params_array['id_ciudad'])
               ->get();
             }else{
