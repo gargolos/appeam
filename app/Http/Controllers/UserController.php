@@ -202,7 +202,8 @@ class UserController extends Controller
                 $usuario->password = hash('sha256', $params_array['password']);
                 $usuario->image = $params_array['image'];
                 
-                $usuario->id_participante = isset($params_array['id_participante']) ? $params_array['id_participante']:1;
+                //$usuario->id_participante = isset($params_array['id_participante']) ? $params_array['id_participante']:1;
+                $usuario->id_participante = $params_array['id_participante'];
                 $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = 0;
 
