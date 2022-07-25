@@ -879,9 +879,49 @@ WHERE `ubicaciones`.`nombre`='Demo' and `ubicaciones`.`id_ciudad`=1
     }
 
 
+    public function rptSinFotos(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'id_ciudad' => 'required|numeric'
+            ]);
+         //var_dump($json); 
+         //die();
+        if($validate->fails()){
+            //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Los datos enviados contienen errores',
+                    'errors' => $validate->errors()
+                );
+            }else{
+                $id_ciudad=$params_array['id_ciudad'];
+                $informe = DB::table('participantes')
+                ->select(['referencia as REF' , 'n', 'ap', 'am', 'ac', 'e', 'foto1', 'foto2'])                        
+                ->where('id_ciudad','=', $id_ciudad)
+                ->where('foto1','=', "")
+                ->orwhere('foto2','=', "")
+                ->get();     
+                             
+                    $data =[
+                        'code' => 200,
+                        'status' => 'success',
+                        'participant' => $informe
+                    ];
+            } 
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        }
 
-
-
+        return response()->json($data, $data['code']);
+            
+    }
 
 }
 

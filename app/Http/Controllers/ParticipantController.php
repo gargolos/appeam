@@ -425,6 +425,54 @@ class ParticipantController extends Controller
         ]);
         
     }
+    
+    public function updateFotos(Request $request){
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
 
+        if(!empty($params_array)){
+            $validate = Validator::make($params_array, [
+                'REF' => 'required|string',
+                'e' => 'email',
+                'foto1' => 'string|max:255',
+                'foto2' => 'string|max:255',
+            ]);
+
+            $ref = $params_array['REF'];
+            if($validate->fails()){
+                //La validacion a fallado
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'Los datos proporcionados no son correctos',
+                    'errors' => $validate->errors()
+                );
+            
+
+            }else{
+                /*buscar con la REF*/
+                $participante =  Participants::firstOrNew (['referencia'=> $ref]);
+                $participante->foto1 = $this->validaDefault($params_array['foto1'],$participante->foto1);                
+                $participante->foto1 = $this->validaDefault($params_array['foto2'],$participante->foto1);
+
+                $participante->save();
+               
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    //'participant' => $participante
+                ];
+                
+            }
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos del participante2store'
+            ];
+        }
+        return response()->json($data, $data['code']);
+
+    }
 
 }
