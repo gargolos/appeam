@@ -30,11 +30,14 @@ class PruebasController extends Controller
         echo  "<hr>";
         die();
 */
+
+echo "<h2>Hola Test</h2>";
+/*
 $ciudades = Cities::all();
      return response()->json([
             'code' => 200,
             'status' => 'success',
             'ciudades' => $ciudades
-        ]);
+        ]);*/
     }
 }
