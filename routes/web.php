@@ -81,3 +81,5 @@ Route::get('/api/reporte9', 'rptInformesController@rptReporte9');
 Route::get('/api/reporte10', 'rptInformesController@rptReporte10');
 Route::get('/api/reporte12', 'rptInformesController@rptReporte12');
 Route::get('/api/reporte13', 'rptInformesController@rptReporte13');
+
+Route::resource('/api/reminder', 'ReminderController');
