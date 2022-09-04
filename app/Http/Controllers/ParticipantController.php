@@ -105,7 +105,8 @@ class ParticipantController extends Controller
                 'vie' => 'numeric',
                 'sab' => 'numeric',
                 'dom' => 'numeric',
-                'foto' => 'string|max:255',
+                'foto1' => 'string|max:255',
+                'foto2' => 'string|max:255',
                 'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
                 'fecha_registro' => 'date',
@@ -163,7 +164,8 @@ class ParticipantController extends Controller
                 $participante->vie = $this->validaDefault($params_array['vie'],0); //Default 0 No Puede
                 $participante->sab = $this->validaDefault($params_array['sab'],0); //Default 0 No Puede
                 $participante->dom = $this->validaDefault($params_array['dom'],0); //Default 0 No Puede
-                $participante->foto = $this->validaDefault($params_array['foto'],'');
+                $participante->foto1 = $this->validaDefault($params_array['foto1'],'');
+                $participante->foto2 = $this->validaDefault($params_array['foto2'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
                 $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
@@ -221,7 +223,8 @@ class ParticipantController extends Controller
                 'vie' => 'numeric',
                 'sab' => 'numeric',
                 'dom' => 'numeric',
-                'foto' => 'string|max:255',
+                'foto1' => 'string|max:255',
+                'foto2' => 'string|max:255',
                 'id_ciudad' => 'required',
                 'estado' => 'numeric',
                 'fecha_registro' => 'date',
@@ -290,7 +293,8 @@ class ParticipantController extends Controller
                 $participante->vie = $this->validaDefault($params_array['vie'],0); //Default 0 No Puede
                 $participante->sab = $this->validaDefault($params_array['sab'],0); //Default 0 No Puede
                 $participante->dom = $this->validaDefault($params_array['dom'],0); //Default 0 No Puede
-                $participante->foto = $this->validaDefault($params_array['foto'],'');
+                $participante->foto1 = $this->validaDefault($params_array['foto1'],'');
+                $participante->foto2 = $this->validaDefault($params_array['foto2'],'');
                 //$participante->id_turno =  $params_array['turno']; // buscar el turno Default 1 Sin Asignar
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
                 $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
