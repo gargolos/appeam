@@ -83,8 +83,7 @@ class ParticipantController extends Controller
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
         
-        echo   $params_array['foto1'];
-        die();
+
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
                 'n' => 'required|string',
@@ -141,8 +140,6 @@ class ParticipantController extends Controller
                 );
             }else{
 
-                
-             
 
                 $participante = new Participants();
                             
