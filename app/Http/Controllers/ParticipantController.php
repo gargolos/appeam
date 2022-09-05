@@ -82,7 +82,7 @@ class ParticipantController extends Controller
     public function store(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
-        try{
+        
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
@@ -106,8 +106,8 @@ class ParticipantController extends Controller
                 'vie' => 'numeric',
                 'sab' => 'numeric',
                 'dom' => 'numeric',
-              //  'foto1' => 'string|max:255',
-               // 'foto2' => 'string|max:255',
+                'foto1' => 'string|max:255',
+                'foto2' => 'string|max:255',
                 'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
                 'fecha_registro' => 'date',
@@ -198,18 +198,6 @@ class ParticipantController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
-    } catch (Throwable $e) {
-        //report($e);
-        $data =[
-            'code' => 400,
-            'status' => 'error',
-            'message' => 'No se han enviado los datos del participante2 ',
-            'error' => $e
-        ];
- 
-        return response()->json($data, $data['code']);
-    }
-
 
     }
 
