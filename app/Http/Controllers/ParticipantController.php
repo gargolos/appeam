@@ -106,8 +106,8 @@ class ParticipantController extends Controller
                 'vie' => 'numeric',
                 'sab' => 'numeric',
                 'dom' => 'numeric',
-                'foto1' => 'string|max:255',
-                'foto2' => 'string|max:255',
+                //'foto1' => 'string|max:255',
+                //'foto2' => 'string|max:255',
                 'id_ciudad' => 'required|numeric',
                 'estado' => 'numeric',
                 'fecha_registro' => 'date',
@@ -181,7 +181,7 @@ class ParticipantController extends Controller
                 
                 $participante->ppeamId = $this->validaDefault($params_array['ppeamId'],0);
               
-                $participante->save();
+                //$participante->save();
                 
                 $data =[
                     'code' => 200,
