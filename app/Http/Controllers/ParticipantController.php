@@ -175,7 +175,7 @@ class ParticipantController extends Controller
                 $cuenta=$this->validaRef(strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)));  
                 $participante->referencia = strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)). $cuenta; //construir la funcion ref
                 
-                $participante->ppeamId = $params_array['ppeamId']; 
+                $participante->ppeamId = $this->validaDefault($params_array['ppeamId'],0);
               
                 $participante->save();
                 
@@ -304,7 +304,7 @@ class ParticipantController extends Controller
                 //$cuenta=$this->validaRef(strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)));  
                 //$participante->referencia = strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)). $cuenta; //construir la funcion ref
                 
-                $participante->ppeamId = $params_array['ppeamId']; 
+                $participante->ppeamId = $this->validaDefault($params_array['ppeamId'],0); 
                 //$participante->id_users = $params_array['id_users'];
 
                 $participante->save();
