@@ -82,6 +82,7 @@ class ParticipantController extends Controller
     public function store(Request $request){
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+        try{
 
         if(!empty($params_array)){
             $validate = Validator::make($params_array, [
@@ -114,14 +115,15 @@ class ParticipantController extends Controller
                 'ppeamId' => 'numeric'
             ]);
             
-      
+
+
                            
             $id_ciudad = $params_array['id_ciudad']; //buscar el id
   
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
 
-
+           
             if($validate->fails()){
                 //La validacion a fallado
                 $data = array(
@@ -138,6 +140,8 @@ class ParticipantController extends Controller
                 );
             }else{
 
+                
+                
                 $participante = new Participants();
                             
                 $participante->id_circuito =$id_circuito; //buscar el id              
@@ -194,6 +198,18 @@ class ParticipantController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
+    } catch (Throwable $e) {
+        //report($e);
+        $data =[
+            'code' => 400,
+            'status' => 'error',
+            'message' => 'No se han enviado los datos del participante2 ',
+            'error' => $e
+        ];
+ 
+        return response()->json($data, $data['code']);
+    }
+
 
     }
 
