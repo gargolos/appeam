@@ -84,3 +84,5 @@ Route::get('/api/reporte13', 'rptInformesController@rptReporte13');
 
 Route::resource('/api/reminder', 'ReminderController');
 Route::resource('/api/addressee', 'AddresseeController');
+
+Route::get('/api/presigned', 'CredentialsController@presigned');
