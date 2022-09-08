@@ -148,16 +148,17 @@ class ParticipantController extends Controller
 
                 $participante->n = $params_array['n'];
                 $participante->ap = $params_array['ap'];
-                $participante->am = $params_array['am'];
+                $participante->am = $this->validaDefault($params_array['am'],'X');
                 $participante->ac = $this->validaDefault($params_array['ac'],'');
                 $participante->e = $this->validaDefault($params_array['e'],'');
                 $participante->t = $params_array['t']; 
                 $participante->c = $params_array['c'];
                 $participante->congregacion = $params_array['congregacion'];
                 
+                
+                $participante->nacimiento = $this->validaDefault($params_array['nacimiento'],NULL);
+                $participante->bautismo =  $this->validaDefault($params_array['bautismo'],NULL);
 
-                $participante->nacimiento = $params_array['nacimiento']; 
-                $participante->bautismo = $params_array['bautismo'];
                 $participante->sexo = $params_array['sexo'];
                 $participante->asignacion = $this->validaDefault($params_array['asignacion'],0); //Default 0 Publicador 
                 $participante->lun = $this->validaDefault($params_array['lun'],0); //Default 0 No Puede
@@ -285,8 +286,8 @@ class ParticipantController extends Controller
                 $participante->congregacion = $params_array['congregacion'];
                 
 
-                $participante->nacimiento = $params_array['nacimiento']; 
-                $participante->bautismo = $params_array['bautismo'];
+                $participante->nacimiento = $this->validaDefault($params_array['nacimiento'],NULL);
+                $participante->bautismo =  $this->validaDefault($params_array['bautismo'],NULL);
                 $participante->sexo = $params_array['sexo'];
                 $participante->asignacion = $this->validaDefault($params_array['asignacion'],0); //Default 0 Publicador 
                 $participante->lun = $this->validaDefault($params_array['lun'],0); //Default 0 No Puede
