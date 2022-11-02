@@ -86,3 +86,6 @@ Route::resource('/api/reminder', 'ReminderController');
 Route::resource('/api/addressee', 'AddresseeController');
 
 Route::get('/api/presigned', 'CredentialsController@presigned');
+Route::get('/api/awsprueba', 'CredentialsController@awsprueba');
+Route::get('/api/bucketcontent', 'CredentialsController@bucketcontent');
+
