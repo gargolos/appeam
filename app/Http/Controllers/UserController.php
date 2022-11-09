@@ -270,7 +270,7 @@ class UserController extends Controller
                 $usuario->id_participante = $params_array['id_participante'];
                 $usuario->id_ciudad = $params_array['id_ciudad'];
                 $usuario->id_rol = $params_array['id_rol'];
-                $usuario->id_usuario_registrador = $params_array['id_usuario_registrador'];
+                $usuario->id_usuario_registrador = $this->validaDefault($params_array['id_usuario_registrador'],0);
                 $usuario->status = 1;
                 
                 $usuario->save();
@@ -316,7 +316,13 @@ class UserController extends Controller
     }
 
        
-   
+    public function validaDefault($valor, $default){
+        if (isset($valor) && !empty($valor)){
+            return $valor; 
+        }else{
+            return $default; //Default 0 Publicador 
+        }
+    }
 
 
 }
