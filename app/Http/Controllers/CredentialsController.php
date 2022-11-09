@@ -22,8 +22,8 @@ class CredentialsController extends Controller
             'version'     => 'latest',
             'region'      => 'us-east-1',
                 'credentials' => [
-                'key'      => 'AKIA3LBDZBPTF4TSAWJ6',
-                'secret'   => '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',
+                'key'      => '',
+                'secret'   => '',
             ]
         ]);
 
@@ -38,8 +38,8 @@ class CredentialsController extends Controller
             'version'     => 'latest',
             'region'      => 'us-east-1',
                 'credentials' => [
-                'key'      => 'AKIAYK7V3K5IO65DUQMJ',
-                'secret'   => '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',
+                'key'      => '',
+                'secret'   => '',
             ]
         ]);
 
@@ -77,8 +77,8 @@ class CredentialsController extends Controller
             'version'     => 'latest',
             'region'      => 'us-east-1',
                'credentials' => [
-                'key'      => 'AKIAYK7V3K5IO65DUQMJ',
-                'secret'   => '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',
+                'key'      => '',
+                'secret'   => '',
             ]
             
         ]);
@@ -86,7 +86,7 @@ class CredentialsController extends Controller
       
             $cmd = $s3client->getCommand('GetObject', [
                 'Bucket' => $bucket_name,
-                'Key' => 'AKIAYK7V3K5IO65DUQMJ'
+                'Key' => ''
             ]);
             
             $request = $s3client->createPresignedRequest($cmd, '+20 minutes');
