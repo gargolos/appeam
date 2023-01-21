@@ -24,9 +24,9 @@ class AddresseeController extends Controller
         
     }
 
-    public function show($id)
+    public function show($id_recordatorio) //es el id del recordatorio no el id del destinatario
     {
-        $destinatarios = DB::table('destinatarios')->where('id_recordatorio', $id)->get();
+        $destinatarios = DB::table('destinatarios')->where('id_recordatorio', $id_recordatorio)->get();
         if(is_object($destinatarios)){
             $data =[
                 'code' => 200,
@@ -47,65 +47,146 @@ class AddresseeController extends Controller
 
     public function store(Request $request)
     {
+       $json = $request->input('json', null);
+       $params_array = json_decode($json, true);
+       $cont = 0;
+        foreach($params_array as $p_array){
+           
+           if(!empty($p_array)){
+           
+                $validate = Validator::make($p_array, [
+                    'id_recordatorio' => 'required|numeric',
+                    'id_destinatario' => 'required|numeric',
+                    'tipo_destinatario' => 'required|numeric'               
+                ]);
+
+            
+                if($validate->fails()){
+                    //La validacion a fallado
+                    $data = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'El recordatorio no se ha creado',
+                        'errors' => $validate->errors()
+                    );            
+                }else{
+
+                    $destinatario = new Addressees($p_array);
+         
+                    $destinatario->id_recordatorio = $p_array['id_recordatorio'];
+                    $destinatario->id_destinatario = $p_array['id_destinatario'];
+                    $destinatario->tipo_destinatario = $p_array['tipo_destinatario'];
+
+                   // $destinatario->save();
+                    
+                    $data =[
+                        'code' => 200,
+                        'status' => 'success',
+                     'destinatarios' => $destinatario
+                    ];
+                  
+                }
+              
+            }else{
+                $data =[
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'No se han enviado los datos del destinatario'
+                ];
+            } 
+            $datos[$cont] = $data;
+            unset($data); unset($destinatario); 
+            $cont++;
+       }
+
+       return response()->json($datos, 200);
+    }
+
+    public function update(Request $request, $id) //el id no es necesario
+    {
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
+        $cont = 0;
+       
+         foreach($params_array as $p_array){
+        
+            if(!empty($p_array)){
+            
+                 $validate = Validator::make($p_array, [
+                     'id' => 'required|numeric',                    
+                     'id_recordatorio' => 'required|numeric',
+                     'id_destinatario' => 'required|numeric',
+                     'tipo_destinatario' => 'required|numeric'               
+                 ]);
+                 
+          
+                 if($validate->fails()){
+                     //La validacion a fallado
+                     $data = array(
+                         'status' => 'error',
+                         'code' => 400,
+                         'message' => 'El recordatorio no se ha creado',
+                         'errors' => $validate->errors()
+                     );            
+                 }else{
+ 
+                    $destinatario =  Addressees::firstOrNew (['id'=> $p_array['id']]);
+                    //unset($p_array['id']);
 
-     
-        if(!empty($params_array)){
-            $validate = Validator::make($params_array, [
-                'id_ciudad' => 'required|numeric',
-                'fecha_inicio' => 'required|date',
-                'fecha_fin' => 'required|date',
-                'id_usuario_remitente' => 'required|numeric',                
-            ]);
-  
+                     $destinatario->id_recordatorio = $p_array['id_recordatorio'];
+                     $destinatario->id_destinatario = $p_array['id_destinatario'];
+                     $destinatario->tipo_destinatario = $p_array['tipo_destinatario'];
+ 
+                     $destinatario->save();
+          
+                     $data =[
+                         'code' => 200,
+                         'status' => 'success',
+                        'destinatarios' => $destinatario
+                     ];
+                                  
+                 }
+           
+             }else{
+                 $data =[
+                     'code' => 400,
+                     'status' => 'error',
+                     'message' => 'No se han enviado los datos del destinatario'
+                 ];
 
-            if($validate->fails()){
-                //La validacion a fallado
-                $data = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'El recordatorio no se ha creado',
-                    'errors' => $validate->errors()
-                );            
-            }else{
+             } 
+             
+             $datos[$cont] = $data;
+             unset($data); unset($destinatario); 
+             $cont++;
+ 
+        }
 
-                $destinatarios = new Reminders();
-                $destinatarios->id_ciudad = $params_array['id_ciudad'];
-                $destinatarios->titulo = $params_array['titulo'];
-                $destinatarios->mensaje = $params_array['mensaje'];
-                $destinatarios->fecha_inicio = $params_array['fecha_inicio'];
-                $destinatarios->fecha_fin = $params_array['fecha_fin'];
-                $destinatarios->prioridad = $params_array['prioridad'];
-                $destinatarios->id_usuario_remitente = $params_array['id_usuario_remitente'];
+        return response()->json($datos, 200);
+     }
 
-               // $destinatarios->save();
-                
-                $data =[
-                    'code' => 200,
-                    'status' => 'success',
-                    'destinatarios' => $destinatarios
-                ];
-                
-            }
+
+    public function destroy($id_recordatorio) //es el id del recordatorio no el id del destinatario
+    {
+
+        $destinatarios = DB::table('destinatarios')->where('id_recordatorio', $id)->get();
+        if(!empty($destinatarios)){
+            DB::table('destinatarios')->where('id_recordatorio', $id)->delete();
+
+          //  $destinatarios->delete();
+               
+            $data =[
+                'code' => 200,
+                'status' => 'success',
+                'participant' => $destinatarios
+            ];
         }else{
             $data =[
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'No se han enviado los datos del destinatario'
+                'message' => 'El destinatario no existe.'
             ];
         }
         return response()->json($data, $data['code']);
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-
-    public function destroy($id)
-    {
-        //
     }
 }

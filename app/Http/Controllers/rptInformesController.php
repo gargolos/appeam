@@ -313,6 +313,87 @@ $users = $query->addSelect('age')->get();
 
     }
 
+    public function rptReporte6(Request $request){
+        // Informes //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
+    $json = $request->input('json', null);
+    $params_array = json_decode($json, true);
+    if(!empty($params_array)){
+    $validate = Validator::make($params_array, [
+        'ubicacion' => 'required|string',
+        'año' => 'numeric',
+        'mes' => 'numeric',
+        'id_ciudad' => 'required|numeric'
+    ]);
+
+         if($validate->fails()){
+        //La validacion a fallado
+        $data = array(
+            'status' => 'error',
+            'code' => 400,
+            'message' => 'Los datos enviados contienen errores',
+            'errors' => $validate->errors()
+        );
+        
+        }else{
+       
+            $location = new Locations();                
+            $id_ubicacion = $location->ret_ID($params_array['ubicacion'], $params_array['id_ciudad']); 
+
+//            var_dump($ubicacion);
+  //          var_dump($fecha2); die();
+  /*
+$query = DB::table('users')->select('name');
+$users = $query->addSelect('age')->get();
+*/
+            $año=$params_array['año'];
+            $mes=$params_array['mes'];
+                //Mes
+                    $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
+                
+               // $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
+               //var_dump($fecha1); var_dump($fecha2);die();
+               $informe = DB::table('informes')
+                ->join('turnos', 'turnos.id', '=', 'informes.id_turno')
+                ->join('horarios','horarios.id','=','turnos.id_ubicacion')
+                ->select('informes.*', 'horarios.hora_inicio', 'horarios.hora_fin'  )
+                ->whereBetween('informes.fecha', [$fecha1, $fecha2])
+                ->where('turnos.id_ubicacion','=',$id_ubicacion)
+                ->get();
+                // var_dump($id_ubicacion);die();
+
+            /*SELECT `informes`.*, `horarios`.`hora_inicio`, `horarios`.`hora_fin`  FROM `informes` INNER JOIN `turnos` ON `informes`.`id_turno` = `turnos`.`id`
+INNER JOIN `horarios` ON `turnos`.`id_horario` = `horarios`.`id`
+WHERE fecha BETWEEN '2023-01-01' and '2023-01-31'
+AND  `turnos`.`id_ubicacion` = 1 */
+
+            if (empty($informe)){
+                    $data =[
+                        'code' => 400,
+                        'status' => 'error',
+                        'message' => 'El informe no tiene datos'
+                    ];
+            }else{
+                $data =[
+                    'code' => 200,
+                    'status' => 'success',
+                    'informe' => $informe
+                ];
+            }
+        }       
+        }else{
+            $data =[
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han enviado los datos para el informe'
+            ];
+        
+        }
+            return response()->json($data, $data['code']);
+
+    }
+
+
     public function rptReporte7(Request $request){
         // Informes //requiere o la semana o el mes y el año ademas de la ubicacion en nombre y el id_ciudad
     $json = $request->input('json', null);
