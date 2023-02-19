@@ -19,8 +19,9 @@ class ReminderController extends Controller
        date_default_timezone_set("America/Mexico_City");
        
        $fecha = date('Y-m-d H:i:s');
-        //echo $fecha;
-        
+      //  echo $fecha;
+       
+      if (isset($params_array['id_usuario'])){ 
         $recordatorios_rol = DB::table('recordatorios') 
         ->join('destinatarios','destinatarios.id_recordatorio', '=', 'recordatorios.id' )
         ->join('users', 'users.id', '=', 'recordatorios.id_usuario_remitente')
@@ -43,6 +44,18 @@ class ReminderController extends Controller
         ->union($recordatorios_rol)
         ->orderBy('prioridad', 'asc')
         ->get();
+      }else{
+       $recordatorios = DB::table('recordatorios') 
+        ->join('destinatarios','recordatorios.id','=', 'destinatarios.id_recordatorio')
+        ->join('users', 'users.id', '=', 'recordatorios.id_usuario_remitente')
+        ->select(['recordatorios.id as id', 'titulo', 'mensaje', 'fecha_inicio','fecha_fin','prioridad','recordatorios.id_ciudad', 'users.user  as remitente', 'destinatarios.id_destinatario', 'destinatarios.tipo_destinatario' ])
+        ->where('recordatorios.id_ciudad', '=',  $params_array['id_ciudad'])
+        ->where( 'recordatorios.fecha_inicio', '<=' , $fecha)
+        ->where( 'recordatorios.fecha_fin', '>=' , $fecha)
+        ->orderBy('prioridad', 'asc')
+        ->get();   
+      }
+      
 
         return response()->json([
             'code' => 200,
@@ -61,7 +74,7 @@ class ReminderController extends Controller
         ->select(['recordatorios.id as id', 'titulo', 'mensaje', 'fecha_inicio','fecha_fin','prioridad','recordatorios.id_ciudad', 'users.user  as remitente', 'destinatarios.id_destinatario', 'destinatarios.tipo_destinatario' ])
         ->where('recordatorios.id', '=',  $id)
         ->get();
-
+        
         if(is_object($recordatorios)){
             $data =[
                 'code' => 200,
@@ -76,6 +89,7 @@ class ReminderController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
+        
     }
  
 
