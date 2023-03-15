@@ -69,15 +69,16 @@ class AddresseeController extends Controller
                         'message' => 'El recordatorio no se ha creado',
                         'errors' => $validate->errors()
                     );            
+                     
                 }else{
 
                     $destinatario = new Addressees($p_array);
-         
+                    echo $p_array['id_recordatorio'];
                     $destinatario->id_recordatorio = $p_array['id_recordatorio'];
                     $destinatario->id_destinatario = $p_array['id_destinatario'];
                     $destinatario->tipo_destinatario = $p_array['tipo_destinatario'];
 
-                   // $destinatario->save();
+                    $destinatario->save();
                     
                     $data =[
                         'code' => 200,
@@ -94,9 +95,9 @@ class AddresseeController extends Controller
                     'message' => 'No se han enviado los datos del destinatario'
                 ];
             } 
-            $datos[$cont] = $data;
+          /*$datos[$cont] = $data;
             unset($data); unset($destinatario); 
-            $cont++;
+            $cont++;*/
        }
 
        return response()->json($datos, 200);
@@ -132,7 +133,7 @@ class AddresseeController extends Controller
  
                     $destinatario =  Addressees::firstOrNew (['id'=> $p_array['id']]);
                     //unset($p_array['id']);
-
+                    
                      $destinatario->id_recordatorio = $p_array['id_recordatorio'];
                      $destinatario->id_destinatario = $p_array['id_destinatario'];
                      $destinatario->tipo_destinatario = $p_array['tipo_destinatario'];
@@ -173,7 +174,7 @@ class AddresseeController extends Controller
         if(!empty($destinatarios)){
             DB::table('destinatarios')->where('id_recordatorio', $id)->delete();
 
-          //  $destinatarios->delete();
+            $destinatarios->delete();
                
             $data =[
                 'code' => 200,
