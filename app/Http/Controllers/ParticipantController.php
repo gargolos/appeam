@@ -116,13 +116,12 @@ class ParticipantController extends Controller
             ]);
             
 
-
                            
             $id_ciudad = $params_array['id_ciudad']; //buscar el id
-  
+
             $circuit = new Circuits();                
             $id_circuito = $circuit->ret_ID($params_array['circuito'], $id_ciudad); //buscar el id
-
+ 
            
             if($validate->fails()){
                 //La validacion a fallado
@@ -155,7 +154,7 @@ class ParticipantController extends Controller
                 $participante->c = $params_array['c'];
                 $participante->congregacion = $params_array['congregacion'];
                 
-                
+
                 $participante->nacimiento = $this->validaDefault($params_array['nacimiento'],NULL);
                 $participante->bautismo =  $this->validaDefault($params_array['bautismo'],NULL);
 
@@ -174,13 +173,21 @@ class ParticipantController extends Controller
                 $participante->estado = $this->validaDefault($params_array['estado'],1);    // default 1 No asignado
                 $participante->fecha_registro = $this->validaDefault($params_array['fecha_registro'],'');
                 $participante->observaciones = $this->validaDefault($params_array['observaciones'],'');
-               
+ 
                 $mydate=$params_array['nacimiento'];
+
+                $params_array['ap']=$this->change_char($params_array['ap']);
+                $params_array['am']=$this->change_char($params_array['am']);
+                $params_array['n']=$this->change_char($params_array['n']);
+              
+                //change_char()
+              // $cuenta=strtoupper(substr($this->change_char($params_array['ap']),0,2)) . strtoupper(substr($this->change_char($params_array['am']),0,1)) . strtoupper(substr($this->change_char($params_array['n']),0,1));
+              // var_dump($cuenta);
+
                 $cuenta=$this->validaRef(strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)));  
                 $participante->referencia = strtoupper(substr($params_array['ap'],0,2)) . strtoupper(substr( $params_array['am'],0,1)) . strtoupper(substr($params_array['n'],0,1)) . date("y", strtotime($mydate)) .  date("m", strtotime($mydate)) . date("d", strtotime($mydate)). $cuenta; //construir la funcion ref
-                
                 $participante->ppeamId = $this->validaDefault($params_array['ppeamId'],0);
-              
+     
                 $participante->save();
                 
                 $data =[
@@ -363,6 +370,22 @@ class ParticipantController extends Controller
         }
     }
 
+    public function change_char( $str1){
+        //Cambia los caracteres no validos
+        if(empty($str1)){
+            return 'X';
+        }else{
+    
+        $unwanted_array = array('Ñ'=>'N', 'ñ'=>'n', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+        'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U',
+        'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c',
+        'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o',
+        'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u');
+
+        return strtr( $str1, $unwanted_array );
+        }
+    }
+
     public function validaRef($referencia){
         //Devuelve la cantidad de Referencias encontradas
         $participante =Participants::where('referencia', 'like',  substr($referencia,0,strlen($referencia)-1) . '%' )->get();
@@ -483,4 +506,8 @@ class ParticipantController extends Controller
 
     }
 
+    
+
 }
+
+
