@@ -14,11 +14,12 @@ class AddresseeController extends Controller
 
     public function index()
     {
+        
         $destinatarios = Addressees::all();
 
         return response()->json([
             'code' => 200,
-            'status' => 'success',
+            'status' => 'success11',
             'ciudades' => $destinatarios
         ]);
         
@@ -60,6 +61,7 @@ class AddresseeController extends Controller
                     'tipo_destinatario' => 'required|numeric'               
                 ]);
 
+           // 
             
                 if($validate->fails()){
                     //La validacion a fallado
@@ -73,19 +75,19 @@ class AddresseeController extends Controller
                 }else{
 
                     $destinatario = new Addressees($p_array);
-                    echo $p_array['id_recordatorio'];
+                   // echo $p_array['id_recordatorio'];
                     $destinatario->id_recordatorio = $p_array['id_recordatorio'];
                     $destinatario->id_destinatario = $p_array['id_destinatario'];
                     $destinatario->tipo_destinatario = $p_array['tipo_destinatario'];
 
-                    $destinatario->save();
-                    
+                    //$destinatario->save();
+                    var_dump($destinatario->id_destinatario);
                     $data =[
                         'code' => 200,
                         'status' => 'success',
-                     'destinatarios' => $destinatario
+                        'destinatarios' => $destinatario
                     ];
-                  
+                   // unset($destinatario);
                 }
               
             }else{
@@ -95,12 +97,12 @@ class AddresseeController extends Controller
                     'message' => 'No se han enviado los datos del destinatario'
                 ];
             } 
-          /*$datos[$cont] = $data;
-            unset($data); unset($destinatario); 
-            $cont++;*/
+          $datos[$cont] = $data;
+          //  unset($data); unset($destinatario); 
+            $cont++;
        }
 
-       return response()->json($datos, 200);
+       return response()->json($data, 200);
     }
 
     public function update(Request $request, $id) //el id no es necesario

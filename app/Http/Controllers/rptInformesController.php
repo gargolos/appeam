@@ -350,8 +350,11 @@ $users = $query->addSelect('age')->get();
         
                 //Mes
                     $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
-                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
-                   // var_dump($id_ubicacion);die();
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, 0, $año)); //ultimo de mes    
+              
+                    //$fecha2 =  date("Y-m-t", strtotime($fecha1));
+
+                    // var_dump($id_ubicacion);die();
                // $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
                //var_dump($fecha1); var_dump($fecha2);die();
                
