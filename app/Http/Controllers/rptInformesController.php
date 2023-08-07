@@ -249,11 +249,11 @@ $users = $query->addSelect('age')->get();
                 if(empty($mes)){
                     //año de servicio
                     $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, 9, 1, $año)); //priemero del mes
-                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, -1, $año+1)); //ultimo de mes    
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, 0, $año+1)); //ultimo de mes    
                 }else{
                     
                     $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
-                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, 0, $año)); //ultimo de mes    
                 }
     
                 $informe = DB::table('ausencias')
@@ -440,11 +440,11 @@ $users = $query->addSelect('age')->get();
                 if(empty($mes)){
                     //año de servicio
                     $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, 9, 1, $año-1)); //priemero del mes
-                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, -1, $año)); //ultimo de mes    
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, 9, 0, $año)); //ultimo de mes    
                 }else{
                     
                     $fecha1 = date(DATE_ATOM, mktime(0, 0, 0, $mes, 1, $año)); //priemero del mes
-                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, -1, $año)); //ultimo de mes    
+                    $fecha2 = date(DATE_ATOM, mktime(0, 0, 0, $mes+1, 0, $año)); //ultimo de mes    
                 }
                // $informe['total'] = DB::table('participantes')->where('id_ciudad', '=', $id_ciudad)->count();
                //var_dump($fecha1); var_dump($fecha2);die();
